@@ -1,0 +1,147 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}My Profile | Society Connect{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-wrapper">
+    <div class="profile-header">
+        <h1><i class="fa-solid fa-user-pen"></i> My Profile</h1>
+        <p>Manage your account settings and personal information</p>
+    </div>
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="profile-container">
+        <!-- Left Side: Avatar Display -->
+        <div class="profile-card avatar-card">
+            <div class="avatar-wrapper">
+                {% if user.userprofile.profile_pic and user.userprofile.profile_pic.name and 'default' not in user.userprofile.profile_pic.name %}
+                    <img src="{{ user.userprofile.profile_pic.url }}" alt="Profile Picture" class="profile-avatar">
+                {% else %}
+                    <div class="avatar-placeholder">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                {% endif %}
+            </div>
+            <h2 class="user-display-name">{{ user.userprofile.full_name|default:user.username }}</h2>
+            <div class="user-role-badge">
+                <i class="fa-solid fa-house-user"></i> {{ user.userprofile.get_role_display|default:'Resident' }}
+            </div>
+            
+            <div class="quick-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Wing</span>
+                    <span class="stat-value">{{ user.userprofile.wing|default:'--' }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Flat</span>
+                    <span class="stat-value">{{ user.userprofile.flat_no|default:'--' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Edit Form -->
+        <div class="profile-card edit-card">
+            <h3 class="card-title">Account Information</h3>
+            
+            <form method="POST" enctype="multipart/form-data" class="profile-form">
+                {% csrf_token %}
+                
+                <div class="form-section">
+                    <h4><i class="fa-solid fa-image"></i> Profile Picture</h4>
+                    <div class="form-group file-upload-group">
+                        <label for="profile_pic" class="file-upload-label">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Choose new image
+                        </label>
+                        <input type="file" name="profile_pic" id="profile_pic" accept="image/*" class="file-input">
+                        <span id="file-chosen">No file chosen</span>
+                    </div>
+                </div>
+
+                <div class="form-section dual-col">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-at"></i>
+                            <input type="text" id="username" name="username" value="{{ user.username }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="full_name">Full Name</label>
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-id-card"></i>
+                            <input type="text" id="full_name" name="full_name" value="{{ user.userprofile.full_name }}" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section dual-col">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="email" id="email" name="email" value="{{ user.email }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-phone"></i>
+                            <input type="text" id="phone" name="phone" value="{{ user.userprofile.phone }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section dual-col">
+                    <div class="form-group">
+                        <label for="wing">Building Wing</label>
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-building"></i>
+                            <input type="text" id="wing" name="wing" value="{{ user.userprofile.wing }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="flat_no">Flat Number</label>
+                        <div class="input-with-icon">
+                            <i class="fa-solid fa-door-closed"></i>
+                            <input type="text" id="flat_no" name="flat_no" value="{{ user.userprofile.flat_no }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-save">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // File upload aesthetic handling
+    const actualBtn = document.getElementById('profile_pic');
+    const fileChosen = document.getElementById('file-chosen');
+
+    actualBtn.addEventListener('change', function(){
+      fileChosen.textContent = this.files[0].name;
+    });
+</script>
+{% endblock %}

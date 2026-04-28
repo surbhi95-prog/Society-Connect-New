@@ -1,0 +1,149 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Manage Rules | Society Admin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_panel/css/adminRules.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<section class="page-hero" style="padding-bottom: 10px;">
+    <div class="badge-pill">
+        <i class="fa-solid fa-scale-balanced"></i> Regulations
+    </div>
+    <h1>Rules & Regulations</h1>
+    <p>Create and manage rules that will be visible to all residents.</p>
+    <div style="margin-top: 1.5rem;">
+        <button class="sc-btn sc-btn-primary" onclick="openAddModal()">
+            <i class="fa-solid fa-plus"></i> Add Rule
+        </button>
+    </div>
+</section>
+
+<!-- RULES LIST -->
+<section class="rules-section">
+    <div class="rules-container">
+
+        {% if rules %}
+            {% for rule in rules %}
+                <div class="rule-item">
+                    <div class="rule-header">
+                        <div>
+                            <h3>{{ rule.title }}</h3>
+                            <span class="rule-category">{{ rule.get_category_display }}</span>
+                        </div>
+
+                        <!-- ACTIONS -->
+                        <div class="rule-actions">
+                            <button class="sc-btn sc-btn-outline" style="border-color: rgba(239, 68, 68, 0.4); color: #f87171; padding: 6px 14px;"
+                                    onclick="openDeleteModal('{{ rule.id }}')"
+                                    title="Delete Rule">
+                                <i class="fa-solid fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+
+                    <p>{{ rule.description }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-rules">
+                <i class="fa-solid fa-book-open" style="font-size: 3rem; display:block; margin-bottom:1rem; opacity:0.5;"></i>
+                No rules created yet. Click “Add Rule” to get started.
+            </p>
+        {% endif %}
+
+    </div>
+</section>
+
+<!-- ADD RULE MODAL -->
+<div id="ruleModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeRuleModal()">&times;</span>
+        <h2><i class="fa-solid fa-plus-circle"></i> Add New Rule</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Category <span style="color:var(--coral);">*</span></label>
+                <select name="category" required>
+                    <option value="">Select Category</option>
+                    <option value="parking">Parking</option>
+                    <option value="rental">Rental</option>
+                    <option value="noise">Noise</option>
+                    <option value="waste">Waste</option>
+                    <option value="facilities">Facilities</option>
+                    <option value="security">Security</option>
+                    <option value="fire">Fire Safety</option>
+                    <option value="pets">Pets Policy</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Rule Title <span style="color:var(--coral);">*</span></label>
+                <input type="text" name="title" placeholder="E.g. No Parking in Driveways" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description <span style="color:var(--coral);">*</span></label>
+                <textarea name="description" rows="5" placeholder="Elaborate on the rule..." required></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="sc-btn sc-btn-outline" onclick="closeRuleModal()">Cancel</button>
+                <button type="submit" class="sc-btn sc-btn-primary">
+                    <i class="fa-solid fa-check"></i> Save Rule
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- DELETE CONFIRMATION MODAL -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content delete-modal" style="max-width: 400px; text-align: center;">
+        <h2 style="border:none;"><i class="fa-solid fa-triangle-exclamation" style="font-size:3rem; color:#f87171; display:block; margin-bottom:1rem;"></i> Confirm Delete</h2>
+        <p style="color:var(--text-bright); border:none;">Are you sure you want to delete this rule?</p>
+
+        <form method="POST" id="deleteForm" data-url="{% url 'admin_panel:delete_rule' 0 %}">
+            {% csrf_token %}
+            <input type="hidden" name="rule_id" id="deleteRuleId">
+
+            <div class="form-actions" style="justify-content:center; margin-top:2rem;">
+                <button type="button" class="sc-btn sc-btn-outline" onclick="closeDeleteModal()">Cancel</button>
+                <button type="submit" class="sc-btn sc-btn-primary" style="background: rgba(239, 68, 68, 0.8); box-shadow: none;">
+                    <i class="fa-solid fa-trash"></i> Delete Rule
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openAddModal() {
+    document.getElementById('ruleModal').style.display = 'block';
+}
+
+function closeRuleModal() {
+    document.getElementById('ruleModal').style.display = 'none';
+}
+</script>
+
+<script>
+function openDeleteModal(ruleId) {
+    const form = document.getElementById('deleteForm');
+
+    form.action = form.dataset.url.replace('/0/', `/${ruleId}/`);
+
+    document.getElementById('deleteModal').style.display = 'block';
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+}
+</script>
+
+{% endblock %}

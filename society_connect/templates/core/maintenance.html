@@ -1,0 +1,316 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Maintenance & Payments | Society Connect{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/maintenance.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="maintenance-hero">
+    <h1>Maintenance & Payments</h1>
+    <p>Transparent, simple and secure maintenance management</p>
+</section>
+
+<!-- MAIN CONTAINER -->
+<section class="container">
+
+    <!-- PLANS -->
+    <h2 class="section-title">Choose Your Maintenance Plan</h2>
+
+    <div class="plans-grid">
+        <div class="plan-card">
+            <h3>Monthly</h3>
+            <p class="price">₹100</p>
+            <ul>
+                <li>Pay every month</li>
+                <li>Maximum flexibility</li>
+                <li>No discounts</li>
+            </ul>
+            <button class="select-plan-btn" data-price="100" data-mult="1">Select Plan</button>
+        </div>
+
+        <div class="plan-card">
+            <h3>Quarterly</h3>
+            <p class="price">₹300</p>
+            <ul>
+                <li>Save ₹20</li>
+                <li>Pay once in 3 months</li>
+                <li>Less hassle</li>
+            </ul>
+            <button class="select-plan-btn" data-price="300" data-mult="3">Select Plan</button>
+        </div>
+
+        <div class="plan-card">
+            <h3>Half-Yearly</h3>
+            <p class="price">₹600</p>
+            <ul>
+                <li>Save ₹50</li>
+                <li>Balanced option</li>
+                <li>Peace of mind</li>
+            </ul>
+            <button class="select-plan-btn" data-price="600" data-mult="6">Select Plan</button>
+        </div>
+
+        <div class="plan-card best">
+            <span class="badge">Best Value</span>
+            <h3>Yearly</h3>
+            <p class="price">₹1200</p>
+            <ul>
+                <li>Save ₹150</li>
+                <li>No monthly reminders</li>
+                <li>Priority handling</li>
+            </ul>
+            <button class="select-plan-btn" data-price="1200" data-mult="12">Select Plan</button>
+        </div>
+    </div>
+
+    <!-- SNAPSHOT -->
+    <h2 class="section-title">Monthly Snapshot</h2>
+
+    <div class="snapshot-grid">
+        <div class="snapshot-card">
+            <i data-lucide="wallet"></i>
+            <h4>Monthly Maintenance</h4>
+            <p>₹100</p>
+        </div>
+        <div class="snapshot-card">
+            <i data-lucide="home"></i>
+            <h4>Total Flats</h4>
+            <p>120</p>
+        </div>
+        <div class="snapshot-card">
+            <i data-lucide="bar-chart-3"></i>
+            <h4>Total Collection</h4>
+            <p>₹12,000</p>
+        </div>
+    </div>
+
+    <!-- BREAKDOWN -->
+    <div class="breakdown-box">
+        <button id="openBreakdown">View Maintenance Breakdown</button>
+    </div>
+
+    <!-- PAYMENT -->
+    <h2 class="section-title">Payment</h2>
+
+    <div class="payment-box">
+        <p><strong>Amount Payable:</strong> <span id="amountPayableVal">₹1200</span></p>
+        <button id="payBtn" class="pay-btn">Pay Now</button>
+        <button onclick="simulateSuccess()" class="pay-btn" style="margin-top: 10px; background-color: #f59e0b; color: white;">Simulate Payment Success</button>
+    </div>
+
+    <!-- FAQ -->
+    <h2 class="section-title">FAQs</h2>
+
+    <div class="faq">
+        <details>
+            <summary>Why is maintenance mandatory?</summary>
+            <p>Maintenance ensures smooth functioning of society services.</p>
+        </details>
+        <details>
+            <summary>What happens if I delay payment?</summary>
+            <p>Late fees may apply after the due date.</p>
+        </details>
+        <details>
+            <summary>Is maintenance refundable?</summary>
+            <p>No, maintenance charges are non-refundable.</p>
+        </details>
+    </div>
+
+    <!-- NOTICE -->
+    <div class="notice">
+        ⚠ Maintenance should be paid before the 10th of every month.
+    </div>
+
+</section>
+
+<!-- BREAKDOWN MODAL -->
+<div class="modal" id="breakdownModal">
+    <div class="modal-content">
+        <h3>Maintenance Breakdown</h3>
+        <table>
+            <tr>
+                <th>Category</th>
+                <th>Amount</th>
+            </tr>
+            <tr>
+                <td>Security</td>
+                <td id="b-security">₹30</td>
+            </tr>
+            <tr>
+                <td>Cleaning</td>
+                <td id="b-cleaning">₹25</td>
+            </tr>
+            <tr>
+                <td>Electricity</td>
+                <td id="b-electricity">₹20</td>
+            </tr>
+            <tr>
+                <td>Water</td>
+                <td id="b-water">₹15</td>
+            </tr>
+            <tr>
+                <td>Repairs</td>
+                <td id="b-repairs">₹10</td>
+            </tr>
+        </table>
+        <button id="closeBreakdown">Close</button>
+    </div>
+</div>
+
+<!-- Load Lucide Icons Script -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- PAGE-SPECIFIC JS -->
+<script>
+    const openBtn = document.getElementById("openBreakdown");
+    const closeBtn = document.getElementById("closeBreakdown");
+    const modal = document.getElementById("breakdownModal");
+
+    if (openBtn) {
+        openBtn.addEventListener("click", () => modal.style.display = "flex");
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener("click", () => modal.style.display = "none");
+    }
+
+    modal.addEventListener("click", e => {
+        if (e.target === modal) modal.style.display = "none";
+    });
+
+    lucide.createIcons();
+
+    // DYNAMIC UI LOGIC
+    const planButtons = document.querySelectorAll('.select-plan-btn');
+    const amountPayableVal = document.getElementById('amountPayableVal');
+    const bSecurity = document.getElementById('b-security');
+    const bCleaning = document.getElementById('b-cleaning');
+    const bElectricity = document.getElementById('b-electricity');
+    const bWater = document.getElementById('b-water');
+    const bRepairs = document.getElementById('b-repairs');
+
+    const baseBreakdown = { security: 30, cleaning: 25, electricity: 20, water: 15, repairs: 10 };
+
+    planButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            // Reset all buttons
+            planButtons.forEach(b => {
+                b.textContent = 'Select Plan';
+                b.style.backgroundColor = '';
+                b.style.color = '';
+                b.closest('.plan-card').classList.remove('active-plan');
+            });
+
+            // Highlight selected button
+            e.target.textContent = 'Selected';
+            e.target.style.backgroundColor = '#16a34a'; // green
+            e.target.style.color = '#fff';
+            e.target.closest('.plan-card').classList.add('active-plan');
+
+            const price = e.target.getAttribute('data-price');
+            const mult = parseInt(e.target.getAttribute('data-mult'));
+
+            amountPayableVal.textContent = '₹' + price;
+
+            bSecurity.textContent = '₹' + (baseBreakdown.security * mult);
+            bCleaning.textContent = '₹' + (baseBreakdown.cleaning * mult);
+            bElectricity.textContent = '₹' + (baseBreakdown.electricity * mult);
+            bWater.textContent = '₹' + (baseBreakdown.water * mult);
+            bRepairs.textContent = '₹' + (baseBreakdown.repairs * mult);
+        });
+    });
+
+    // Default select Yearly plan
+    const defaultBtn = document.querySelector('.select-plan-btn[data-mult="12"]');
+    if (defaultBtn) {
+        defaultBtn.click();
+    }
+
+</script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+let currentOrder = null;
+let selectedAmount = null;
+
+// On Pay button click
+document.getElementById("payBtn").addEventListener("click", function () {
+
+    selectedAmount = document.getElementById('amountPayableVal').textContent.replace('₹', '');
+
+    fetch("/create-order/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            amount: selectedAmount
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert("Error: " + data.error);
+            return;
+        }
+
+        currentOrder = data;
+
+        var options = {
+            "key": "{{ RAZORPAY_KEY_ID }}",
+            "amount": data.amount,
+            "currency": "INR",
+            "name": "Society Connect",
+            "description": "Maintenance Payment",
+            "order_id": data.order_id,
+
+            "handler": function (response){
+                // ignore real success (since it's unreliable)
+            },
+
+            "prefill": {
+                "name": "Test User",
+                "email": "test@test.com",
+                "contact": "9999999999"
+            },
+
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+
+        var rzp = new Razorpay(options);
+        rzp.open();
+    });
+});
+
+// 👇 MANUAL SUCCESS BUTTON
+function simulateSuccess() {
+    if (!currentOrder || !currentOrder.order_id) {
+        alert("Please click 'Pay Now' to create an order first, then close the popup to simulate.");
+        return;
+    }
+
+    fetch("/save-payment/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            amount: selectedAmount,
+            order_id: currentOrder.order_id,
+            payment_id: "MANUAL_" + Date.now()
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert("Payment Successful (Manual) & Saved!");
+    });
+}
+</script>
+
+{% endblock %}

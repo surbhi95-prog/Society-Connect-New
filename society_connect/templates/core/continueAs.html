@@ -1,0 +1,716 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Society Connect – The all-in-one platform for housing society management. Manage notices, maintenance, complaints, and more with ease.">
+  <title>Society Connect | Smart Society Management Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'core/css/continueAs.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="glass-nav" id="main-nav">
+  <div class="nav-content">
+    <div class="nav-logo">
+      <div class="logo-ring">
+        <img src="{% static 'images/SocietyConnectLogo.jpeg' %}" alt="Society Connect Logo" class="logo-small">
+      </div>
+      <div class="nav-brand">
+        <span class="brand-name">Society Connect</span>
+        <span class="brand-tagline">Smart. Seamless. Secure.</span>
+      </div>
+    </div>
+    <div class="nav-links" id="nav-links">
+      <a href="#how-it-works" class="nav-link"><i class="fa-solid fa-circle-nodes"></i> How It Works</a>
+      <a href="#register" class="nav-link"><i class="fa-solid fa-building-columns"></i> For Societies</a>
+      <a href="#testimonials" class="nav-link"><i class="fa-solid fa-heart"></i> Reviews</a>
+      <a href="#faqs" class="nav-link"><i class="fa-solid fa-circle-question"></i> FAQs</a>
+    </div>
+    <div class="nav-actions">
+      <a href="{% url 'login' %}" class="btn nav-btn resident-btn"><i class="fa-solid fa-user-check"></i> Resident</a>
+      <a href="{% url 'admin_panel:admin_login' %}" class="btn nav-btn admin-btn"><i class="fa-solid fa-user-tie"></i> Admin</a>
+    </div>
+    <button class="hamburger" id="hamburger-btn" onclick="toggleMobileNav()" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#how-it-works" onclick="closeMobileNav()">How It Works</a>
+  <a href="#register" onclick="closeMobileNav()">For Societies</a>
+  <a href="#testimonials" onclick="closeMobileNav()">Reviews</a>
+  <a href="#faqs" onclick="closeMobileNav()">FAQs</a>
+  <div class="mobile-btns">
+    <a href="{% url 'login' %}" class="btn primary-btn">Resident Login</a>
+    <a href="{% url 'admin_panel:admin_login' %}" class="btn outline-btn">Admin Login</a>
+  </div>
+</div>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero" id="hero">
+  <!-- Ambient gradient blobs -->
+  <div class="hero-ambient">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+  <!-- Animated grid overlay -->
+  <div class="hero-grid"></div>
+
+  <div class="hero-content">
+    <div class="hero-pill animate-fade-up" style="--delay:0.1s">
+      <i class="fa-solid fa-sparkles"></i> Trusted by 1200+ Residents
+    </div>
+
+    <div class="hero-logo-wrap animate-fade-up" style="--delay:0.2s">
+      <div class="hero-logo-ring">
+        <img src="{% static 'images/SocietyConnectLogo.jpeg' %}" alt="Society Connect" class="hero-logo-img">
+      </div>
+      <div class="hero-logo-glow"></div>
+    </div>
+
+    <h1 class="hero-title animate-fade-up" style="--delay:0.3s">
+      Society Connect
+    </h1>
+    <p class="hero-subtitle animate-fade-up" style="--delay:0.4s">
+      One platform. Complete control. Zero chaos.
+    </p>
+    <p class="hero-description animate-fade-up" style="--delay:0.5s">
+      The all-in-one society management platform for housing committees and residents. Manage notices, payments, complaints, and events — all from one seamless dashboard.
+    </p>
+
+    <div class="hero-cta animate-fade-up" style="--delay:0.6s">
+      <a href="{% url 'login' %}" class="btn primary-btn hero-primary-btn" id="resident-login-cta">
+        <i class="fa-solid fa-user-check"></i>
+        <span>Resident Login</span>
+        <i class="fa-solid fa-arrow-right btn-arrow"></i>
+      </a>
+      <a href="{% url 'admin_panel:admin_login' %}" class="btn glass-btn" id="admin-login-cta">
+        <i class="fa-solid fa-user-tie"></i>
+        <span>Admin Login</span>
+      </a>
+    </div>
+
+    <div class="hero-features animate-fade-up" style="--delay:0.7s">
+      <div class="hero-feature">
+        <i class="fa-solid fa-lock"></i> Secure Access
+      </div>
+      <div class="hero-feature-divider"></div>
+      <div class="hero-feature">
+        <i class="fa-solid fa-bolt"></i> Instant Notices
+      </div>
+      <div class="hero-feature-divider"></div>
+      <div class="hero-feature">
+        <i class="fa-solid fa-mobile-screen"></i> Mobile Ready
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-cta" onclick="scrollToNext()">
+    <span>Explore</span>
+    <div class="scroll-arrow-wrap">
+      <i class="fa-solid fa-chevron-down"></i>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== STATS STRIP ==================== -->
+<section class="stats-strip" id="stats">
+  <div class="stats-inner">
+    <div class="stat-item" data-count="1200" data-suffix="+">
+      <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+      <div class="stat-number" id="stat-0">1200+</div>
+      <div class="stat-label">Residents Served</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item" data-count="50" data-suffix="+">
+      <div class="stat-icon"><i class="fa-solid fa-building"></i></div>
+      <div class="stat-number" id="stat-1">50+</div>
+      <div class="stat-label">Wings Managed</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item" data-count="99" data-suffix="%">
+      <div class="stat-icon"><i class="fa-solid fa-shield-halved"></i></div>
+      <div class="stat-number" id="stat-2">99%</div>
+      <div class="stat-label">Uptime Guaranteed</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item" data-count="24" data-suffix="/7">
+      <div class="stat-icon"><i class="fa-solid fa-headset"></i></div>
+      <div class="stat-number" id="stat-3">24/7</div>
+      <div class="stat-label">Support Available</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FEATURES SHOWCASE ==================== -->
+<section class="features-section section" id="features">
+  <div class="section-header">
+    <div class="badge-pill"><i class="fa-solid fa-star"></i> Features</div>
+    <h2>Everything Your Society Needs</h2>
+    <p>Powerful tools built for modern housing societies, designed to simplify every aspect of community management.</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-tile feature-large">
+      <div class="feature-icon-big"><i class="fa-solid fa-bullhorn"></i></div>
+      <h3>Instant Notices</h3>
+      <p>Broadcast important society announcements to all residents in real-time. Pin critical notices for maximum visibility.</p>
+      <div class="feature-tag">Core Feature</div>
+    </div>
+    <div class="feature-tile">
+      <div class="feature-icon-big"><i class="fa-solid fa-money-bill-wave"></i></div>
+      <h3>Maintenance Payments</h3>
+      <p>Razorpay-integrated online payment system. Monthly, quarterly, or annual plans — all trackable.</p>
+    </div>
+    <div class="feature-tile">
+      <div class="feature-icon-big"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <h3>Complaint Tracker</h3>
+      <p>Residents raise complaints; admins track, assign, and resolve them with a full audit trail.</p>
+    </div>
+    <div class="feature-tile">
+      <div class="feature-icon-big"><i class="fa-solid fa-calendar-days"></i></div>
+      <h3>Event Management</h3>
+      <p>Plan and communicate society events, festivals, and meetings efficiently.</p>
+    </div>
+    <div class="feature-tile feature-large feature-right">
+      <div class="feature-icon-big"><i class="fa-solid fa-chart-line"></i></div>
+      <h3>Admin Analytics</h3>
+      <p>Comprehensive dashboards giving committee members insights into payment status, complaints, and resident engagement at a glance.</p>
+      <div class="feature-tag">Admin Only</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== HOW IT WORKS ==================== -->
+<section id="how-it-works" class="section timeline-section">
+  <div class="section-header">
+    <div class="badge-pill"><i class="fa-solid fa-circle-nodes"></i> Workflow</div>
+    <h2>How It Works</h2>
+    <p>From society onboarding to daily management — our streamlined platform handles it all in three powerful steps.</p>
+  </div>
+
+  <div class="timeline-container">
+    <!-- Step 1 -->
+    <div class="timeline-item left reveal-item">
+      <div class="timeline-content-card">
+        <div class="tl-step-number">01</div>
+        <div class="tl-icon-wrap">
+          <i class="fa-solid fa-file-signature"></i>
+        </div>
+        <h3>Society Onboards</h3>
+        <p>The managing committee contacts our team to get a dedicated society instance. We configure the complete structure including wings, flat numbers, and admin access.</p>
+        <ul class="tl-points">
+          <li><i class="fa-solid fa-check"></i> Custom wing &amp; flat configuration</li>
+          <li><i class="fa-solid fa-check"></i> Super Admin credentials handed over</li>
+          <li><i class="fa-solid fa-check"></i> Setup completed within 24 hours</li>
+        </ul>
+      </div>
+      <div class="tl-center-dot"><div class="dot-inner"></div></div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="timeline-item right reveal-item">
+      <div class="tl-center-dot"><div class="dot-inner"></div></div>
+      <div class="timeline-content-card">
+        <div class="tl-step-number">02</div>
+        <div class="tl-icon-wrap">
+          <i class="fa-solid fa-user-plus"></i>
+        </div>
+        <h3>Residents Register</h3>
+        <p>Committee shares the portal link. Residents self-register by selecting their wing and flat number. The admin approves accounts to ensure only verified residents gain access.</p>
+        <ul class="tl-points">
+          <li><i class="fa-solid fa-check"></i> Self-registration with flat mapping</li>
+          <li><i class="fa-solid fa-check"></i> Admin approval workflow</li>
+          <li><i class="fa-solid fa-check"></i> Secure, unique resident profiles</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="timeline-item left reveal-item">
+      <div class="timeline-content-card">
+        <div class="tl-step-number">03</div>
+        <div class="tl-icon-wrap">
+          <i class="fa-solid fa-rocket"></i>
+        </div>
+        <h3>Go Live &amp; Manage</h3>
+        <p>Your society is live! Admins can post notices, configure maintenance schedules, track complaints, and manage resident data — all from a powerful, intuitive dashboard.</p>
+        <ul class="tl-points">
+          <li><i class="fa-solid fa-check"></i> Real-time notice broadcasting</li>
+          <li><i class="fa-solid fa-check"></i> Online maintenance payments</li>
+          <li><i class="fa-solid fa-check"></i> Full complaint management</li>
+        </ul>
+      </div>
+      <div class="tl-center-dot"><div class="dot-inner"></div></div>
+    </div>
+
+    <div class="timeline-track"></div>
+  </div>
+</section>
+
+<!-- ==================== REGISTER YOUR SOCIETY ==================== -->
+<section id="register" class="section register-section">
+  <div class="register-glow"></div>
+  <div class="section-header">
+    <div class="badge-pill light"><i class="fa-solid fa-building-columns"></i> For Committees</div>
+    <h2>Register Your Society</h2>
+    <p>Ready to transform how your housing society is managed? Getting started takes less than 24 hours.</p>
+  </div>
+
+  <div class="register-steps">
+    <div class="register-step reveal-item" id="reg-step-1">
+      <div class="reg-step-num">Step 1</div>
+      <div class="reg-step-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+      <h4>Request Access</h4>
+      <p>Send us your society details — name, number of wings, and total flats. Our onboarding team will reach out within a few hours to begin your setup.</p>
+      <div class="reg-step-connect-line"></div>
+    </div>
+    <div class="register-step reveal-item" id="reg-step-2">
+      <div class="reg-step-num">Step 2</div>
+      <div class="reg-step-icon"><i class="fa-solid fa-sliders"></i></div>
+      <h4>We Configure for You</h4>
+      <p>Our team sets up your unique society database — wings, flat layouts, maintenance plans, and your Super Admin account. You receive credentials within 24 hours.</p>
+      <div class="reg-step-connect-line"></div>
+    </div>
+    <div class="register-step reveal-item" id="reg-step-3">
+      <div class="reg-step-num">Step 3</div>
+      <div class="reg-step-icon"><i class="fa-solid fa-share-nodes"></i></div>
+      <h4>Invite Your Residents</h4>
+      <p>Share the unique portal link with your residents. They register themselves into your pre-configured flat layout, and you approve them as admin.</p>
+    </div>
+  </div>
+
+  <div class="register-cta-box reveal-item">
+    <div class="cta-box-content">
+      <div class="cta-box-text">
+        <h3>Ready to get started?</h3>
+        <p>Contact our onboarding team and get your society live within 24 hours.</p>
+      </div>
+      <a href="mailto:onboarding@societyconnect.com" class="btn register-cta-btn" id="contact-sales-btn">
+        <i class="fa-solid fa-paper-plane"></i>
+        Contact Sales to Register
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TESTIMONIALS & FEEDBACK ==================== -->
+<section id="testimonials" class="section testimonials-section">
+  <div class="section-header">
+    <div class="badge-pill"><i class="fa-solid fa-heart"></i> Community</div>
+    <h2>Wall of Love</h2>
+    <p>See what our residents and committees are saying, or share your own experience with Society Connect.</p>
+  </div>
+
+  <div class="testimonials-layout">
+    <!-- Review Cards Column -->
+    <div class="reviews-column">
+      <div class="review-card reveal-item" id="review-card-1">
+        <div class="review-header">
+          <div class="reviewer-avatar" style="background: linear-gradient(135deg, #667eea, #764ba2);">RD</div>
+          <div class="reviewer-info">
+            <span class="reviewer-name">Rahul Desai</span>
+            <span class="reviewer-flat">A-Wing, Flat 402</span>
+          </div>
+          <div class="review-stars">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+          </div>
+        </div>
+        <p class="review-text">"An absolute game changer for our society! Paying maintenance fees and checking notices takes less than 2 minutes now. I can't imagine going back to WhatsApp groups."</p>
+        <div class="review-footer">
+          <i class="fa-solid fa-quote-right review-quote-icon"></i>
+        </div>
+      </div>
+
+      <div class="review-card reveal-item" id="review-card-2">
+        <div class="review-header">
+          <div class="reviewer-avatar" style="background: linear-gradient(135deg, #f093fb, #f5576c);">PS</div>
+          <div class="reviewer-info">
+            <span class="reviewer-name">Priya Sharma</span>
+            <span class="reviewer-flat">Secretary, B-Wing</span>
+          </div>
+          <div class="review-stars">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            <i class="fa-regular fa-star"></i>
+          </div>
+        </div>
+        <p class="review-text">"The complaint tracker is truly brilliant. Our committee can now monitor every issue from start to resolution. No more lost requests or follow-up calls!"</p>
+        <div class="review-footer">
+          <i class="fa-solid fa-quote-right review-quote-icon"></i>
+        </div>
+      </div>
+
+      <div class="review-card reveal-item" id="review-card-3">
+        <div class="review-header">
+          <div class="reviewer-avatar" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">MK</div>
+          <div class="reviewer-info">
+            <span class="reviewer-name">Mohan Kulkarni</span>
+            <span class="reviewer-flat">Treasurer, C-Wing</span>
+          </div>
+          <div class="review-stars">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+          </div>
+        </div>
+        <p class="review-text">"As treasurer, the payment tracking alone saves me hours every month. All records are in one place, transparent for everyone."</p>
+        <div class="review-footer">
+          <i class="fa-solid fa-quote-right review-quote-icon"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback Form Column -->
+    <div class="feedback-column reveal-item">
+      <div class="feedback-form-card">
+        <div class="form-header-band">
+          <i class="fa-solid fa-pen-to-square"></i>
+          <div>
+            <h3>Share Your Experience</h3>
+            <p>Your feedback helps us build a better platform.</p>
+          </div>
+        </div>
+
+        <form class="feedback-form" id="feedback-form" onsubmit="handleFeedbackSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="feedback-name"><i class="fa-solid fa-user"></i> Your Name</label>
+              <input type="text" id="feedback-name" placeholder="e.g. Anita Joshi" required>
+            </div>
+            <div class="form-group">
+              <label for="feedback-flat"><i class="fa-solid fa-house"></i> Flat / Role</label>
+              <input type="text" id="feedback-flat" placeholder="e.g. A-Wing, Flat 301">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label><i class="fa-solid fa-star"></i> Your Rating</label>
+            <div class="star-rating" id="star-rating">
+              <i class="fa-regular fa-star" data-val="1" onclick="setRating(1)"></i>
+              <i class="fa-regular fa-star" data-val="2" onclick="setRating(2)"></i>
+              <i class="fa-regular fa-star" data-val="3" onclick="setRating(3)"></i>
+              <i class="fa-regular fa-star" data-val="4" onclick="setRating(4)"></i>
+              <i class="fa-regular fa-star" data-val="5" onclick="setRating(5)"></i>
+            </div>
+            <input type="hidden" id="rating-value" name="rating" value="0">
+          </div>
+
+          <div class="form-group">
+            <label for="feedback-text"><i class="fa-solid fa-comment"></i> Your Review</label>
+            <textarea id="feedback-text" rows="4" placeholder="Tell us what you love, or where we can improve..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn primary-btn submit-btn" id="submit-feedback-btn">
+            <i class="fa-solid fa-paper-plane"></i>
+            Submit My Review
+          </button>
+        </form>
+
+        <div class="form-success-state" id="form-success" style="display:none;">
+          <div class="success-animation">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <h4>Thank You!</h4>
+          <p>Your review has been received. We truly appreciate your feedback!</p>
+          <button class="btn outline-btn" onclick="resetFeedbackForm()">Submit Another</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FAQ ==================== -->
+<section id="faqs" class="section faq-section">
+  <div class="faq-glow"></div>
+  <div class="section-header">
+    <div class="badge-pill"><i class="fa-solid fa-circle-question"></i> Support</div>
+    <h2>Frequently Asked Questions</h2>
+    <p>Common questions from societies and residents about onboarding and using Society Connect.</p>
+  </div>
+
+  <div class="faq-grid">
+    <div class="accordion" id="faq-accordion">
+
+      <div class="accordion-item reveal-item" id="faq-1">
+        <button class="accordion-header" onclick="toggleAccordion(this)" id="faq-btn-1">
+          <div class="faq-q-wrap">
+            <div class="faq-icon"><i class="fa-solid fa-tags"></i></div>
+            <span>Is this platform free for residents?</span>
+          </div>
+          <div class="accordion-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+        </button>
+        <div class="accordion-content">
+          <p>Yes! Residents access the portal completely free of charge once their society's managing committee has registered and configured the instance. There are no hidden fees for residents.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item reveal-item" id="faq-2">
+        <button class="accordion-header" onclick="toggleAccordion(this)" id="faq-btn-2">
+          <div class="faq-q-wrap">
+            <div class="faq-icon"><i class="fa-solid fa-clock"></i></div>
+            <span>How long does it take for a society to go live?</span>
+          </div>
+          <div class="accordion-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+        </button>
+        <div class="accordion-content">
+          <p>Once you contact our onboarding team with your society details (wings, flat count, etc.), initial setup takes less than 24 hours. Admin credentials are handed over promptly, and you can start inviting residents right away.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item reveal-item" id="faq-3">
+        <button class="accordion-header" onclick="toggleAccordion(this)" id="faq-btn-3">
+          <div class="faq-q-wrap">
+            <div class="faq-icon"><i class="fa-solid fa-credit-card"></i></div>
+            <span>Can residents pay maintenance online?</span>
+          </div>
+          <div class="accordion-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+        </button>
+        <div class="accordion-content">
+          <p>Absolutely. We have a fully integrated Razorpay payment gateway. Residents can pay monthly, quarterly, half-yearly, or annual maintenance directly from their dashboard. All payment records are automatically logged for the admin.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item reveal-item" id="faq-4">
+        <button class="accordion-header" onclick="toggleAccordion(this)" id="faq-btn-4">
+          <div class="faq-q-wrap">
+            <div class="faq-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <span>Is my society's data secure?</span>
+          </div>
+          <div class="accordion-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+        </button>
+        <div class="accordion-content">
+          <p>Security is our top priority. Each society runs in its own isolated database instance. All data is protected with industry-standard encryption and access is strictly role-based — admins can only see their own society's data.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item reveal-item" id="faq-5">
+        <button class="accordion-header" onclick="toggleAccordion(this)" id="faq-btn-5">
+          <div class="faq-q-wrap">
+            <div class="faq-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+            <span>Does it work on mobile devices?</span>
+          </div>
+          <div class="accordion-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+        </button>
+        <div class="accordion-content">
+          <p>Yes! Society Connect is fully responsive and works seamlessly on smartphones, tablets, and desktops. Residents can check notices, pay maintenance, or raise complaints right from their phone's browser — no app download needed.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item reveal-item" id="faq-6">
+        <button class="accordion-header" onclick="toggleAccordion(this)" id="faq-btn-6">
+          <div class="faq-q-wrap">
+            <div class="faq-icon"><i class="fa-solid fa-circle-info"></i></div>
+            <span>What information is needed to register a society?</span>
+          </div>
+          <div class="accordion-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+        </button>
+        <div class="accordion-content">
+          <p>To get started, just share: (1) Your society's name and address, (2) Number of wings and their names, (3) Total number of flats per wing, and (4) A committee contact email for admin credentials. That's it — we handle the rest.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="faq-contact-card reveal-item">
+      <div class="faq-contact-icon"><i class="fa-solid fa-headset"></i></div>
+      <h4>Still have questions?</h4>
+      <p>Our support team is available around the clock to assist your society with onboarding, configuration, or any other queries.</p>
+      <a href="mailto:support@societyconnect.com" class="btn outline-btn faq-contact-btn" id="contact-support-btn">
+        <i class="fa-solid fa-envelope"></i> Email Support
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="site-footer">
+  <div class="footer-glow"></div>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand-col">
+        <div class="footer-logo-wrap">
+          <img src="{% static 'images/SocietyConnectLogo.jpeg' %}" alt="Society Connect" class="footer-logo-img">
+          <div class="footer-brand-text">
+            <span class="footer-brand-name">Society Connect</span>
+            <span class="footer-brand-sub">Smart Society Management</span>
+          </div>
+        </div>
+        <p class="footer-desc">The complete digital platform for modern housing societies. Connecting committees and residents seamlessly.</p>
+      </div>
+      <div class="footer-nav-col">
+        <h5>Platform</h5>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#features">Features</a>
+        <a href="#register">For Societies</a>
+      </div>
+      <div class="footer-nav-col">
+        <h5>Community</h5>
+        <a href="#testimonials">Reviews</a>
+        <a href="#faqs">FAQs</a>
+        <a href="mailto:support@societyconnect.com">Contact Support</a>
+      </div>
+      <div class="footer-nav-col">
+        <h5>Login</h5>
+        <a href="{% url 'login' %}">Resident Portal</a>
+        <a href="{% url 'admin_panel:admin_login' %}">Admin Panel</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Society Connect Platform. All rights reserved. Built with <i class="fa-solid fa-heart" style="color:#f05d5d;"></i> for housing communities.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ---- NAVBAR SCROLL EFFECT ----
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('main-nav');
+  if (window.scrollY > 50) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+});
+
+// ---- SMOOTH SCROLL ----
+function scrollToNext() {
+  document.getElementById('stats').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ---- MOBILE NAV ----
+function toggleMobileNav() {
+  const menu = document.getElementById('mobile-menu');
+  const btn = document.getElementById('hamburger-btn');
+  menu.classList.toggle('open');
+  btn.classList.toggle('active');
+}
+function closeMobileNav() {
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('hamburger-btn').classList.remove('active');
+}
+
+// ---- ACCORDION ----
+function toggleAccordion(btn) {
+  const item = btn.closest('.accordion-item');
+  const content = btn.nextElementSibling;
+  const chevron = btn.querySelector('.accordion-chevron i');
+  const isOpen = item.classList.contains('open');
+
+  // Close all
+  document.querySelectorAll('.accordion-item.open').forEach(el => {
+    el.classList.remove('open');
+    el.querySelector('.accordion-content').style.maxHeight = null;
+    el.querySelector('.accordion-chevron i').style.transform = 'rotate(0deg)';
+  });
+
+  if (!isOpen) {
+    item.classList.add('open');
+    content.style.maxHeight = content.scrollHeight + 'px';
+    chevron.style.transform = 'rotate(180deg)';
+  }
+}
+
+// ---- STAR RATING ----
+let currentRating = 0;
+function setRating(val) {
+  currentRating = val;
+  document.getElementById('rating-value').value = val;
+  const stars = document.querySelectorAll('#star-rating i');
+  stars.forEach((s, i) => {
+    s.className = i < val ? 'fa-solid fa-star' : 'fa-regular fa-star';
+  });
+}
+
+document.querySelectorAll('#star-rating i').forEach((star, idx) => {
+  star.addEventListener('mouseenter', () => {
+    document.querySelectorAll('#star-rating i').forEach((s, i) => {
+      s.className = i <= idx ? 'fa-solid fa-star' : 'fa-regular fa-star';
+    });
+  });
+  star.addEventListener('mouseleave', () => {
+    document.querySelectorAll('#star-rating i').forEach((s, i) => {
+      s.className = i < currentRating ? 'fa-solid fa-star' : 'fa-regular fa-star';
+    });
+  });
+});
+
+// ---- FEEDBACK FORM ----
+function handleFeedbackSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById('feedback-name').value.trim();
+  const rating = document.getElementById('rating-value').value;
+
+  if (!name) { alert('Please enter your name.'); return; }
+  if (rating === '0') { alert('Please select a rating.'); return; }
+
+  document.getElementById('feedback-form').style.display = 'none';
+  document.getElementById('form-success').style.display = 'flex';
+}
+
+function resetFeedbackForm() {
+  document.getElementById('feedback-form').reset();
+  currentRating = 0;
+  document.getElementById('rating-value').value = '0';
+  document.querySelectorAll('#star-rating i').forEach(s => s.className = 'fa-regular fa-star');
+  document.getElementById('feedback-form').style.display = 'block';
+  document.getElementById('form-success').style.display = 'none';
+}
+
+// ---- REVEAL ON SCROLL (INTERSECTION OBSERVER) ----
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('revealed');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal-item').forEach(el => revealObserver.observe(el));
+
+// ---- COUNTER ANIMATION ----
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      animateCounters();
+      counterObserver.disconnect();
+    }
+  });
+}, { threshold: 0.5 });
+counterObserver.observe(document.querySelector('.stats-strip'));
+
+function animateCounters() {
+  document.querySelectorAll('.stat-item').forEach((item, idx) => {
+    const target = parseInt(item.dataset.count);
+    const suffix = item.dataset.suffix || '';
+    const el = document.getElementById('stat-' + idx);
+    if (!el) return;
+    let start = 0;
+    const duration = 1800;
+    const step = (timestamp) => {
+      if (!step.startTime) step.startTime = timestamp;
+      const progress = Math.min((timestamp - step.startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.floor(eased * target) + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+}
+</script>
+
+</body>
+</html>

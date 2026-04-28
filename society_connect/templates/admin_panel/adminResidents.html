@@ -1,0 +1,122 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}View Residents | Society Admin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_panel/css/adminResidents.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<section class="page-hero">
+    <div class="badge-pill">
+        <i class="fa-solid fa-users"></i> {{ total_residents }} Residents Total
+    </div>
+    <h1>View Residents</h1>
+    <p>Complete list of all registered residents in the society.</p>
+</section>
+
+<!-- RESIDENTS TABLE -->
+<section class="residents-section">
+    <div class="table-container">
+        <table class="residents-table">
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Wing</th>
+                    <th>Flat</th>
+                    <th>Username</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for resident in residents %}
+                <tr
+                    data-full-name="{{ resident.full_name }}"
+                    data-email="{{ resident.user.email }}"
+                    data-phone="{{ resident.phone }}"
+                    data-username="{{ resident.user.username }}"
+                    data-wing="{{ resident.wing }}"
+                    data-flat="{{ resident.flat_no }}"
+                    data-address="{{ resident.address }}"
+                    data-joined="{{ resident.user.date_joined|date:'d M Y' }}"
+                >
+                    <td><strong>{{ resident.full_name }}</strong></td>
+                    <td>{{ resident.user.email }}</td>
+                    <td style="color: var(--text-muted);">{{ resident.phone }}</td>
+                    <td><span style="background:rgba(255,255,255,0.1); padding: 2px 8px; border-radius:4px;">{{ resident.wing }}</span></td>
+                    <td><span style="color: var(--primary);">{{ resident.flat_no }}</span></td>
+                    <td>{{ resident.user.username }}</td>
+                    <td>
+                        <!-- VIEW -->
+                        <button class="action-btn view-btn" onclick="openModal(this)">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+
+                        <!-- DELETE -->
+                        <a href="{% url 'admin_panel:delete_residents' resident.id %}"
+                           class="action-btn delete-btn"
+                           onclick="return confirm('Are you sure you want to delete this resident?');">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7" class="no-data">No residents currently found in the system.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- VIEW MODAL -->
+<div id="viewModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2><i class="fa-solid fa-id-card"></i> Resident Details</h2>
+
+        <p><strong>Full Name:</strong> <span id="mFullName"></span></p>
+        <p><strong>Email:</strong> <span id="mEmail"></span></p>
+        <p><strong>Phone:</strong> <span id="mPhone"></span></p>
+        <p><strong>Username:</strong> <span id="mUsername"></span></p>
+        <p><strong>Wing:</strong> <span id="mWing"></span></p>
+        <p><strong>Flat:</strong> <span id="mFlat"></span></p>
+        <p><strong>Address:</strong> <span id="mAddress"></span></p>
+        <p><strong>Joined:</strong> <span id="mJoined"></span></p>
+        
+        <div style="text-align: right; margin-top: 1.5rem;">
+            <button class="sc-btn sc-btn-outline" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPT -->
+<script>
+function openModal(btn) {
+    const row = btn.closest('tr');
+
+    document.getElementById('mFullName').innerText = row.dataset.fullName;
+    document.getElementById('mEmail').innerText = row.dataset.email;
+    document.getElementById('mPhone').innerText = row.dataset.phone;
+    document.getElementById('mUsername').innerText = row.dataset.username;
+    document.getElementById('mWing').innerText = row.dataset.wing;
+    document.getElementById('mFlat').innerText = row.dataset.flat;
+    document.getElementById('mAddress').innerText = row.dataset.address;
+    document.getElementById('mJoined').innerText = row.dataset.joined;
+
+    document.getElementById('viewModal').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('viewModal').style.display = 'none';
+}
+</script>
+
+{% endblock %}

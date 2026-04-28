@@ -1,0 +1,59 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Notice Board | Society Connect{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/notice.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- TOP BAR -->
+<div class="top">
+    <h2>Stay Up To Date!</h2>
+    <p class="subtitle">View all your important notices here.</p>
+</div>
+
+<div class="notice-topbar">
+    <!-- Search Bar (UI only for now) -->
+    <div class="search-box">
+        <input type="text" placeholder="Search notices...">
+        <button><i>🔍</i></button>
+    </div>
+
+    <!-- Filter Buttons (UI only for now) -->
+    <div class="filters">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">Urgent</button>
+        <button class="filter-btn">Events</button>
+        <button class="filter-btn">General</button>
+        <button class="filter-btn">Maintenance</button>
+    </div>
+</div>
+
+<!-- NOTICE CARDS -->
+<div class="notice-board-cards">
+
+    {% for notice in notices %}
+    <div class="notice-card {{ notice.category }}">
+        <div class="icon">
+            {% if notice.category == "urgent" %}🚨
+            {% elif notice.category == "event" %}🎉
+            {% elif notice.category == "maintenance" %}⚒️
+            {% else %}ℹ️{% endif %}
+        </div>
+
+        <div class="content">
+            <h3>{{ notice.title }}</h3>
+            <p class="date">{{ notice.created_at|date:"d M Y" }}</p>
+            <p class="desc">{{ notice.description }}</p>
+        </div>
+    </div>
+    {% empty %}
+        <p style="text-align:center; color:#555;">No notices available.</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

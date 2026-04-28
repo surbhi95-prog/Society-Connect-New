@@ -1,0 +1,224 @@
+/* ========== ADMIN MAINTENANCE STYLES ========== */
+
+.stats-section, .info-section, .filter-section, .payments-section {
+    margin-bottom: 2.5rem;
+}
+
+/* Base Grids */
+.stats-grid, .info-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.info-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+/* Stat Cards */
+.stat-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    background: var(--glass-bg-md);
+}
+
+.stat-card i {
+    font-size: 2.2rem;
+    padding: 1rem;
+    border-radius: 12px;
+}
+
+/* Specific Stat Colors */
+.stat-card.total i {
+    color: #a78bfa;
+    background: rgba(167, 139, 250, 0.15);
+}
+.stat-card.paid i {
+    color: #34d399;
+    background: rgba(16, 185, 129, 0.15);
+}
+.stat-card.pending i {
+    color: #fbbf24;
+    background: rgba(245, 158, 11, 0.15);
+}
+.stat-card.overdue i {
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.15);
+}
+
+.stat-info h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.6rem;
+    color: var(--text-white);
+    margin-bottom: 0.2rem;
+}
+
+.stat-info p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+/* Info Cards */
+.info-card {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.info-card i {
+    font-size: 1.5rem;
+    color: var(--primary);
+    opacity: 0.8;
+}
+
+.info-card h4 {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+}
+
+.info-card p {
+    color: var(--text-white);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* Filter Bar */
+.filter-container {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filter-group label {
+    color: var(--text-bright);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.filter-group select {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-white);
+    padding: 0.6rem 2rem 0.6rem 1rem;
+    border-radius: var(--radius-sm);
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    appearance: none; /* requires custom arrow typically, or bare styling */
+}
+
+.filter-group select option {
+    background: var(--bg-deepest);
+}
+
+.search-group {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    padding: 0 1rem;
+}
+
+.search-group i {
+    color: var(--text-muted);
+}
+
+.search-group input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text-white);
+    padding: 0.6rem 1rem;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+}
+
+.search-group input::placeholder {
+    color: var(--text-faint);
+}
+
+/* Table container styling shared */
+.table-container {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    overflow-x: auto;
+    padding: 1px;
+}
+
+.payments-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.payments-table th, 
+.payments-table td {
+    padding: 1.2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.payments-table th {
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.payments-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.payments-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.payments-table td {
+    color: var(--text-bright);
+    font-size: 0.95rem;
+}
+
+.no-data {
+    text-align: center;
+    padding: 3rem !important;
+    color: var(--text-faint);
+    font-style: italic;
+}

@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration - Society Connect</title>
+    <link rel="stylesheet" href="{% static 'core/css/registration.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+<div class="container">
+
+    <div class="side-image">
+        <img src="{% static 'images/img1.jpg' %}" alt="registration-image">
+    </div>
+
+    <div class="register-box">
+        <h2>Create Your Account</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {{ user_form.non_field_errors }}
+            {{ profile_form.non_field_errors }}
+
+            <div class="input-group">
+                <i class="fa-solid fa-user"></i>
+                {{ profile_form.full_name }}
+            </div>
+            {{ profile_form.full_name.errors }}
+
+            <div class="input-group">
+                <i class="fa-solid fa-envelope"></i>
+                {{ user_form.email }}
+            </div>
+            {{ user_form.email.errors }}
+
+            <div class="input-group">
+                <i class="fa-solid fa-phone"></i>
+                {{ profile_form.phone }}
+            </div>
+            {{ profile_form.phone.errors }}
+
+            <div class="input-group">
+                <i class="fa-solid fa-house-user"></i>
+                {{ profile_form.wing }}
+            </div>
+            {{ profile_form.wing.errors }}
+
+            <div class="input-group">
+                <i class="fa-solid fa-door-closed"></i>
+                {{ profile_form.flat_no }}
+            </div>
+            {{ profile_form.flat_no.errors }}
+
+            <div class="input-group">
+                <i class="fa-solid fa-map-location-dot"></i>
+                {{ profile_form.address }}
+            </div>
+            {{ profile_form.address.errors }}
+
+            <div class="input-group">
+                <i class="fa-solid fa-user-tag"></i>
+                {{ user_form.username }}
+            </div>
+            {{ user_form.username.errors }}
+
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                {{ user_form.password1 }}
+            </div>
+            {{ user_form.password1.errors }}
+
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                {{ user_form.password2 }}
+            </div>
+            {{ user_form.password2.errors }}
+
+            <button type="submit" class="register-btn">Register</button>
+        </form>
+
+        <p class="login-link">
+            Already have an account?
+            <strong><a href="{% url 'login' %}">Login</a></strong>
+        </p>
+    </div>
+</div>
+</body>
+</html>

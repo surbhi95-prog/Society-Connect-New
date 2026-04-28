@@ -1,0 +1,197 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Track Maintenance | Society Admin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_panel/css/adminMaintenance.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<section class="page-hero" style="padding-bottom: 10px;">
+    <div class="badge-pill">
+        <i class="fa-solid fa-wallet"></i> Financial Overview
+    </div>
+    <h1>Track Maintenance Payments</h1>
+    <p>Monitor and manage all maintenance transactions across the society</p>
+</section>
+
+<!-- STATS OVERVIEW -->
+<section class="stats-section" style="margin-top: 2rem;">
+    <div class="stats-grid">
+        <div class="stat-card total">
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+            <div class="stat-info">
+                <h3>₹{{ total_collection }}</h3>
+                <p>Total Collection (This Month)</p>
+            </div>
+        </div>
+        <div class="stat-card paid">
+            <i class="fa-solid fa-circle-check"></i>
+            <div class="stat-info">
+                <h3>{{ paid_count }}</h3>
+                <p>Paid</p>
+            </div>
+        </div>
+        <div class="stat-card pending">
+            <i class="fa-solid fa-clock"></i>
+            <div class="stat-info">
+                <h3>{{ pending_count }}</h3>
+                <p>Pending</p>
+            </div>
+        </div>
+        <div class="stat-card overdue">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div class="stat-info">
+                <h3>{{ overdue_count }}</h3>
+                <p>Overdue</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- QUICK INFO CARDS -->
+<section class="info-section">
+    <div class="info-grid">
+        <div class="info-card">
+            <i class="fa-solid fa-home"></i>
+            <div>
+                <h4>Total Flats</h4>
+                <p>{{ total_flats }}</p>
+            </div>
+        </div>
+        <div class="info-card">
+            <i class="fa-solid fa-wallet"></i>
+            <div>
+                <h4>Monthly Rate</h4>
+                <p>₹100 / flat</p>
+            </div>
+        </div>
+        <div class="info-card">
+            <i class="fa-solid fa-chart-line"></i>
+            <div>
+                <h4>Collection Rate</h4>
+                <p>{{ collection_rate }}%</p>
+            </div>
+        </div>
+        <div class="info-card">
+            <i class="fa-solid fa-calendar"></i>
+            <div>
+                <h4>Due Date</h4>
+                <p>10th of Every Month</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FILTER SECTION -->
+<section class="filter-section">
+    <form method="GET" class="filter-container" id="filterForm">
+        <div class="filter-group">
+            <label>Month Filter:</label>
+            <select name="month" onchange="document.getElementById('filterForm').submit()">
+                <option value="current" {% if month_filter == 'current' %}selected{% endif %}>Current Month</option>
+                <option value="01" {% if month_filter == '01' %}selected{% endif %}>January</option>
+                <option value="02" {% if month_filter == '02' %}selected{% endif %}>February</option>
+                <option value="03" {% if month_filter == '03' %}selected{% endif %}>March</option>
+                <option value="04" {% if month_filter == '04' %}selected{% endif %}>April</option>
+                <option value="05" {% if month_filter == '05' %}selected{% endif %}>May</option>
+                <option value="06" {% if month_filter == '06' %}selected{% endif %}>June</option>
+                <option value="07" {% if month_filter == '07' %}selected{% endif %}>July</option>
+                <option value="08" {% if month_filter == '08' %}selected{% endif %}>August</option>
+                <option value="09" {% if month_filter == '09' %}selected{% endif %}>September</option>
+                <option value="10" {% if month_filter == '10' %}selected{% endif %}>October</option>
+                <option value="11" {% if month_filter == '11' %}selected{% endif %}>November</option>
+                <option value="12" {% if month_filter == '12' %}selected{% endif %}>December</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Payment Status:</label>
+            <select name="status" onchange="document.getElementById('filterForm').submit()">
+                <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Status</option>
+                <option value="paid" {% if status_filter == 'paid' %}selected{% endif %}>Paid (Success)</option>
+                <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Building:</label>
+            <select name="building" onchange="document.getElementById('filterForm').submit()">
+                <option value="all" {% if building_filter == 'all' %}selected{% endif %}>All Buildings</option>
+                <option value="A" {% if building_filter == 'A' %}selected{% endif %}>Wing A</option>
+                <option value="B" {% if building_filter == 'B' %}selected{% endif %}>Wing B</option>
+                <option value="C" {% if building_filter == 'C' %}selected{% endif %}>Wing C</option>
+                <option value="D" {% if building_filter == 'D' %}selected{% endif %}>Wing D</option>
+            </select>
+        </div>
+        <div class="filter-group" style="flex-grow: 1;">
+            <label>Search Resident:</label>
+            <div class="search-group" style="display: flex; gap: 10px; background: transparent; padding:0; border: none;">
+                <div style="flex-grow: 1; display:flex; align-items:center; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-sm); padding: 0 1rem;">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" name="search" value="{{ search_query }}" placeholder="Search by resident name or flat...">
+                </div>
+                <button type="submit" class="sc-btn sc-btn-primary" style="padding: 0 1rem; height: 100%;">Find</button>
+            </div>
+        </div>
+    </form>
+</section>
+
+<!-- PAYMENT RECORDS TABLE -->
+<section class="payments-section">
+    <div class="table-container">
+        <table class="payments-table">
+            <thead>
+                <tr>
+                    <th>Resident Name</th>
+                    <th>Flat No.</th>
+                    <th>Building</th>
+                    <th>Plan Type</th>
+                    <th>Amount</th>
+                    <th>Month</th>
+                    <th>Payment Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td><strong>{{ payment.user.userprofile.full_name }}</strong></td>
+                    <td><span style="color:var(--primary);">{{ payment.user.userprofile.flat_no }}</span></td>
+                    <td><span style="background:rgba(255,255,255,0.1); padding: 2px 8px; border-radius:4px;">{{ payment.user.userprofile.wing }}</span></td>
+                    <td style="color:var(--text-muted);">
+                        {% if payment.amount == 100 %}Monthly
+                        {% elif payment.amount == 300 %}Quarterly
+                        {% elif payment.amount == 600 %}Half-Yearly
+                        {% elif payment.amount == 1200 %}Yearly
+                        {% else %}Maintenance{% endif %}
+                    </td>
+                    <td style="font-weight:600; color:#34d399;">₹{{ payment.amount }}</td>
+                    <td>{{ payment.created_at|date:"M Y" }}</td>
+                    <td>{{ payment.created_at|date:"d M Y, h:i A" }}</td>
+                    <td>
+                        {% if payment.status|lower == 'success' %}
+                            <span style="color:#10b981; font-weight:600;"><i class="fa-solid fa-check-circle"></i> Paid</span>
+                        {% else %}
+                            <span style="color:#fbbf24; font-weight:600;"><i class="fa-solid fa-clock"></i> {{ payment.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <button class="sc-btn sc-btn-outline" style="padding: 4px 10px;" onclick="alert('Receipt downloading is not available yet.')">
+                            <i class="fa-solid fa-receipt"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="no-data">No payment records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,101 @@
+{% load static %}
+
+<!-- PREMIUM NAVBAR -->
+<header class="sc-navbar" id="sc-navbar">
+    <div class="nav-inner">
+        <!-- Brand -->
+        <a href="{% url 'home' %}" class="nav-brand">
+            <div class="nav-logo-ring">
+                <img src="{% static 'images/SocietyConnectLogo.jpeg' %}" alt="Logo" class="nav-logo-img">
+            </div>
+            <div class="nav-brand-text">
+                <span class="nav-brand-name">Society Connect</span>
+                <span class="nav-brand-sub">Resident Portal</span>
+            </div>
+        </a>
+
+        <!-- Desktop Nav Links -->
+        <nav class="nav-links" id="navLinks">
+            <a href="{% url 'home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                <i class="fa-solid fa-house"></i> Home
+            </a>
+            <a href="{% url 'notice' %}" class="nav-link {% if request.resolver_match.url_name == 'notice' %}active{% endif %}">
+                <i class="fa-solid fa-bell"></i> Notices
+            </a>
+            <a href="{% url 'complaint_form' %}" class="nav-link {% if request.resolver_match.url_name == 'complaint_form' %}active{% endif %}">
+                <i class="fa-solid fa-triangle-exclamation"></i> Complaints
+            </a>
+            <a href="{% url 'services' %}" class="nav-link {% if request.resolver_match.url_name == 'services' %}active{% endif %}">
+                <i class="fa-solid fa-wrench"></i> Services
+            </a>
+            <a href="{% url 'maintenance' %}" class="nav-link {% if request.resolver_match.url_name == 'maintenance' %}active{% endif %}">
+                <i class="fa-solid fa-money-bill-wave"></i> Maintenance
+            </a>
+            <a href="{% url 'payment_history' %}" class="nav-link {% if request.resolver_match.url_name == 'payment_history' %}active{% endif %}">
+                <i class="fa-solid fa-clock-rotate-left"></i> History
+            </a>
+            <a href="{% url 'rules_regulations' %}" class="nav-link {% if request.resolver_match.url_name == 'rules_regulations' %}active{% endif %}">
+                <i class="fa-solid fa-scale-balanced"></i> Rules
+            </a>
+        </nav>
+
+        <!-- Right actions -->
+        <div class="nav-actions">
+            <a href="{% url 'profile' %}" class="nav-profile-btn" title="My Profile">
+                {% if request.user.userprofile.profile_pic and request.user.userprofile.profile_pic.name and 'default' not in request.user.userprofile.profile_pic.name %}
+                    <img src="{{ request.user.userprofile.profile_pic.url }}" alt="Profile" class="nav-avatar-img">
+                {% else %}
+                    <i class="fa-solid fa-user"></i>
+                {% endif %}
+            </a>
+            <div class="nav-divider"></div>
+            <a href="{% url 'admin_panel:admin_logout' %}" class="nav-logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+            <button class="nav-hamburger" id="hamBtn" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- MOBILE SIDEBAR -->
+<div class="mobile-sidebar" id="mobileSidebar">
+    <div class="sidebar-header">
+        <span>Menu</span>
+        <button onclick="document.getElementById('mobileSidebar').classList.remove('sidebar-active')" class="sidebar-close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="{% url 'home' %}"><i class="fa-solid fa-house"></i> Home</a>
+        <a href="{% url 'notice' %}"><i class="fa-solid fa-bell"></i> Notices</a>
+        <a href="{% url 'complaint_form' %}"><i class="fa-solid fa-triangle-exclamation"></i> Complaints</a>
+        <a href="{% url 'services' %}"><i class="fa-solid fa-wrench"></i> Services</a>
+        <a href="{% url 'maintenance' %}"><i class="fa-solid fa-money-bill-wave"></i> Maintenance</a>
+        <a href="{% url 'payment_history' %}"><i class="fa-solid fa-clock-rotate-left"></i> History</a>
+        <a href="{% url 'rules_regulations' %}"><i class="fa-solid fa-scale-balanced"></i> Rules</a>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="{% url 'profile' %}" class="sidebar-profile-link"><i class="fa-solid fa-user-pen"></i> My Profile</a>
+        <a href="{% url 'admin_panel:admin_logout' %}" class="sidebar-logout-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="document.getElementById('mobileSidebar').classList.remove('sidebar-active'); this.style.display='none';"></div>
+
+<script>
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+        document.getElementById('sc-navbar').classList.toggle('scrolled', window.scrollY > 30);
+    });
+    // Hamburger also shows overlay
+    const hamBtnEl = document.getElementById('hamBtn');
+    if (hamBtnEl) {
+        hamBtnEl.addEventListener('click', () => {
+            document.getElementById('mobileSidebar').classList.toggle('sidebar-active');
+            const overlay = document.getElementById('sidebarOverlay');
+            overlay.style.display = document.getElementById('mobileSidebar').classList.contains('sidebar-active') ? 'block' : 'none';
+        });
+    }
+</script>

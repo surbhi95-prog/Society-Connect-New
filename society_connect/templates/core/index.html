@@ -1,0 +1,40 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Home | Society Connect{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <h1>Welcome to Your Society</h1>
+    <p>Stay connected with all notices, events, and services in one place.</p>
+
+    <div class="img-gallery">
+        <img src="{% static 'images/img1.jpg' %}" alt="">
+        <img src="{% static 'images/grp.jpg' %}" alt="">
+        <img src="{% static 'images/img1.jpg' %}" alt="">
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bottom">
+    <div class="footer-content">
+        <p class="name">ABC Society</p>
+        <p>Contact: 12xxxxxxxx / xxxxxxxx99</p>
+
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+    </div>
+</footer>
+
+{% endblock %}

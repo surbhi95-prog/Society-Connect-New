@@ -1,0 +1,181 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Complaint Management | Society Connect{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/complaint_form.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+
+    <!-- ===== SECTION 1: REGISTER NEW COMPLAINT (FORM FIRST) ===== -->
+    <section id="FORM" class="complaint-section">
+        <div class="section-header">
+            <div class="section-badge"><i class="fa-solid fa-pen-to-square"></i> New Complaint</div>
+            <h2>Register a Complaint</h2>
+            <p>Please describe the issue clearly so we can resolve it quickly.</p>
+        </div>
+
+        <div class="complaint-form-container">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-row-two">
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-layer-group"></i> Complaint Category</label>
+                        <select name="category" class="form-control" required>
+                            <option value="" disabled selected>Select Category</option>
+                            <option>Electricity Issue</option>
+                            <option>Water Supply Issue</option>
+                            <option>Plumber Required</option>
+                            <option>Lift Problem</option>
+                            <option>Parking Issue</option>
+                            <option>Security Issue</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-map-pin"></i> Location of the Issue</label>
+                        <input type="text" name="location" class="form-control" placeholder="e.g. Building E, 2nd Floor, Near Lift" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-align-left"></i> Description of the Problem</label>
+                    <textarea name="description" class="form-control" placeholder="Describe the issue in detail here..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-image"></i> Upload Photo or Video <span class="optional-tag">(optional)</span></label>
+                    <input type="file" name="fileUpload" class="form-control file-input" accept="image/*,video/*">
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fa-solid fa-paper-plane"></i> Submit Complaint
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- ===== SECTION 2: YOUR COMPLAINTS LIST ===== -->
+    <section class="tracking-section">
+        <div class="section-header">
+            <div class="section-badge"><i class="fa-solid fa-clipboard-list"></i> My Complaints</div>
+            <h2>Your Complaint Status</h2>
+            <p>Track the progress of all complaints you have submitted.</p>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs" id="statusFilterTabs">
+            <button class="tab-btn active" data-filter="all">
+                <i class="fa-solid fa-list-ul"></i> All
+            </button>
+            <button class="tab-btn" data-filter="pending">
+                <i class="fa-solid fa-clock"></i> Pending
+            </button>
+            <button class="tab-btn" data-filter="progress">
+                <i class="fa-solid fa-spinner"></i> In Progress
+            </button>
+            <button class="tab-btn" data-filter="resolved">
+                <i class="fa-solid fa-check-circle"></i> Resolved
+            </button>
+        </div>
+
+        <!-- Complaints LIST -->
+        <div class="complaints-list" id="complaintsGrid">
+            {% for complaint in complaints %}
+            <div class="complaint-list-item complaint-item" data-status="{{ complaint.status|lower }}">
+
+                <!-- Left: Category Icon -->
+                <div class="list-item-icon">
+                    <i class="fa-solid fa-tag get-cat-color" data-cat="{{ complaint.category }}"></i>
+                </div>
+
+                <!-- Middle: Main Info -->
+                <div class="list-item-body">
+                    <div class="list-item-top">
+                        <span class="list-complaint-id">#SC{{ complaint.id }}</span>
+                        <span class="list-category">{{ complaint.category }}</span>
+                    </div>
+                    <div class="list-item-meta">
+                        <span><i class="fa-solid fa-location-dot"></i> {{ complaint.location }}</span>
+                        <span><i class="fa-solid fa-calendar-alt"></i> {{ complaint.created_at|date:"d M Y" }}</span>
+                    </div>
+                </div>
+
+                <!-- Right: Status Badge -->
+                <div class="list-item-status">
+                    <span class="badge status-{{ complaint.status|lower }}">
+                        {% if complaint.status|lower == "pending" %}
+                            <i class="fa-solid fa-clock"></i>
+                        {% elif complaint.status|lower == "progress" %}
+                            <i class="fa-solid fa-spinner fa-spin"></i>
+                        {% elif complaint.status|lower == "resolved" %}
+                            <i class="fa-solid fa-check"></i>
+                        {% else %}
+                            <i class="fa-solid fa-circle-info"></i>
+                        {% endif %}
+                        {{ complaint.status }}
+                    </span>
+                </div>
+
+            </div>
+            {% empty %}
+            <div class="no-data">
+                <i class="fa-solid fa-inbox"></i>
+                <p>No complaints submitted yet.</p>
+                <span>Use the form above to register your first complaint.</span>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+        // 1. FILTER TABS
+        const tabs = document.querySelectorAll('.tab-btn');
+        const items = document.querySelectorAll('.complaint-item');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                const filterValue = this.getAttribute('data-filter');
+
+                items.forEach(item => {
+                    if (filterValue === 'all') {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display =
+                            item.getAttribute('data-status') === filterValue ? 'flex' : 'none';
+                    }
+                });
+            });
+        });
+
+        // 2. DYNAMIC CATEGORY ICON COLORS
+        const categoryColors = {
+            'electricity issue':  '#f59e0b',
+            'water supply issue': '#0ea5e9',
+            'plumber required':   '#8b5cf6',
+            'lift problem':       '#ec4899',
+            'parking issue':      '#94a3b8',
+            'security issue':     '#ef4444',
+            'other':              '#10b981'
+        };
+
+        document.querySelectorAll('.get-cat-color').forEach(icon => {
+            const cat = (icon.getAttribute('data-cat') || '').toLowerCase();
+            icon.style.color = categoryColors[cat] || categoryColors['other'];
+        });
+    });
+</script>
+
+{% endblock %}

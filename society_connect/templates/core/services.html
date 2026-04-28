@@ -1,0 +1,153 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Society Services | Society Connect{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/services.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<section class="services-page">
+    <div class="services-header">
+        <h1>Society Services</h1>
+        <p>Contact verified service providers for your needs</p>
+    </div>
+
+    <div class="services-container">
+        {% if services %}
+            {% for service in services %}
+            <div class="service-card">
+                <div class="service-image">
+                    <i class="fa-solid {{ service.get_icon_class }} fa-3x"></i>
+                </div>
+
+                <h3>{{ service.get_service_name }}</h3>
+
+                <div class="service-provider">
+                    <p><strong>Provider:</strong> {{ service.provider_name }}</p>
+                </div>
+
+                {% if service.service_description %}
+                <div class="service-description">
+                    <p>{{ service.service_description|truncatewords:15 }}</p>
+                </div>
+                {% endif %}
+
+                <button class="contact-btn" onclick="showServiceDetails({{ service.id }})">
+                    Contact
+                </button>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-services-message">
+                <i class="fa-solid fa-box-open fa-3x"></i>
+                <h3>No Services Available</h3>
+                <p>Services will be added soon by the admin.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- ✅ CENTERED MODAL -->
+<div id="serviceModal" class="service-modal" onclick="closeOnOutside(event)">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <!-- CONTENT GOES HERE (CENTERED CARD) -->
+        <div id="serviceDetails"></div>
+    </div>
+</div>
+
+<script>
+const servicesData = {
+    {% for service in services %}
+    {{ service.id }}: {
+        name: "{{ service.get_service_name }}",
+        provider: "{{ service.provider_name }}",
+        contact: "{{ service.contact_number }}",
+        email: "{{ service.email_address|default:'' }}",
+        alternate: "{{ service.alternate_number|default:'' }}",
+        description: "{{ service.service_description|default:''|escapejs }}",
+        address: "{{ service.address|default:''|escapejs }}",
+        days: "{{ service.available_days|default:'' }}",
+        hours: "{{ service.available_hours|default:'' }}",
+        icon: "{{ service.get_icon_class }}"
+    },
+    {% endfor %}
+};
+
+function showServiceDetails(id) {
+    const s = servicesData[id];
+    if (!s) return;
+
+    document.getElementById("serviceDetails").innerHTML = `
+        <div class="service-detail-header">
+            <i class="fa-solid ${s.icon}"></i>
+            <h2>${s.name}</h2>
+            <p>${s.provider}</p>
+        </div>
+
+        <div class="service-info">
+            <div class="info-row">
+                <i class="fa-solid fa-phone"></i>
+                <span>${s.contact}</span>
+            </div>
+
+            ${s.email ? `
+            <div class="info-row">
+                <i class="fa-solid fa-envelope"></i>
+                <span>${s.email}</span>
+            </div>` : ""}
+
+            ${s.description ? `
+            <div class="info-row">
+                <i class="fa-solid fa-info-circle"></i>
+                <span>${s.description}</span>
+            </div>` : ""}
+
+            ${s.address ? `
+            <div class="info-row">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>${s.address}</span>
+            </div>` : ""}
+
+            ${s.days ? `
+            <div class="info-row">
+                <i class="fa-solid fa-calendar"></i>
+                <span>${s.days}</span>
+            </div>` : ""}
+
+            ${s.hours ? `
+            <div class="info-row">
+                <i class="fa-solid fa-clock"></i>
+                <span>${s.hours}</span>
+            </div>` : ""}
+        </div>
+
+        <div class="contact-actions">
+            <button class="action-btn call-btn" onclick="location.href='tel:${s.contact}'">
+                Call Now
+            </button>
+            ${s.email ? `
+            <button class="action-btn email-btn" onclick="location.href='mailto:${s.email}'">
+                Send Email
+            </button>` : ""}
+        </div>
+    `;
+
+    /* 🔥 THIS IS THE FIX */
+    document.getElementById("serviceModal").style.display = "flex";
+}
+
+function closeModal() {
+    document.getElementById("serviceModal").style.display = "none";
+}
+
+function closeOnOutside(e) {
+    if (e.target.id === "serviceModal") {
+        closeModal();
+    }
+}
+</script>
+{% endblock %}

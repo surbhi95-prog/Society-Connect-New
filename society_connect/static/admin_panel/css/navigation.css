@@ -1,0 +1,152 @@
+/* RESET + SAFETY */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    width: 100%;
+    overflow-x: hidden;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* NAVBAR */
+.navbar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background: linear-gradient(120deg, #0d769f, #2575a7, #3b86c4);
+    color: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+}
+
+.nav-links a {
+    color: white;
+    font-size: 15px;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.nav-links a.active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile img {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.5);
+    object-fit: cover;
+}
+
+.profile a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 18px;
+    background: rgba(239, 68, 68, 0.9);
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: white;
+    cursor: pointer;
+}
+
+/* MOBILE SIDEBAR */
+.mobile-sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 230px;
+    height: 100%;
+    background: white;
+    padding-top: 80px;
+    transition: 0.3s ease;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.15);
+    z-index: 2000;
+}
+
+.mobile-sidebar a {
+    display: block;
+    padding: 16px 20px;
+    font-size: 16px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+    text-decoration: none;
+}
+
+.mobile-sidebar a:hover {
+    background: #e0f2ff;
+    color: #0d769f;
+}
+
+.sidebar-active {
+    left: 0;
+}
+
+/* LAYOUT FIX */
+.layout-wrapper {
+    display: flex;
+    width: 100%;
+    margin-top: 0;
+}
+
+.main-content {
+    width: 100%;
+    padding: 25px;
+    max-width: 1400px;
+    margin: auto;
+}
+
+.logout-btn {
+    color: rgb(208, 208, 238);
+    font-weight: 600;
+}
+
+.logout-btn:hover {
+    background-color: rgba(255, 77, 77, 0.1);
+}
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+    .nav-links {
+        display: none;
+    }
+
+    .hamburger {
+        display: block;
+    }
+}

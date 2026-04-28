@@ -1,0 +1,109 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Society Admin | Society Connect{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_panel/css/adminHome.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="page-hero admin-dashboard-hero">
+    <div class="badge-pill">
+        <i class="fa-solid fa-bolt"></i> Admin Dashboard
+    </div>
+    <h1>Welcome Back, Society Head</h1>
+    <p>Your central command for managing everything that keeps the community thriving — from communication to operational excellence.</p>
+</section>
+
+<!-- INFO STRIP -->
+<section class="info-strip">
+    <div class="info-card">
+        <i class="fa-solid fa-building"></i>
+        <div class="info-details">
+            <strong>1200+</strong>
+            <span>Active Residents</span>
+        </div>
+    </div>
+    <div class="info-card">
+        <i class="fa-solid fa-house-circle-check"></i>
+        <div class="info-details">
+            <strong>8</strong>
+            <span>Buildings</span>
+        </div>
+    </div>
+    <div class="info-card">
+        <i class="fa-solid fa-calendar-days"></i>
+        <div class="info-details">
+            <strong>365</strong>
+            <span>Days Active</span>
+        </div>
+    </div>
+    <div class="info-card">
+        <i class="fa-solid fa-shield-halved"></i>
+        <div class="info-details">
+            <strong>Secure</strong>
+            <span>Platform</span>
+        </div>
+    </div>
+</section>
+
+<!-- OVERVIEW -->
+<section class="overview-section">
+    <h2 class="sc-section-title"><i class="fa-solid fa-chart-pie"></i> Society at a Glance</h2>
+    <div class="overview-grid">
+        <div class="overview-card glass-card">
+            <i class="fa-solid fa-comments"></i>
+            <h4>Seamless Communication</h4>
+            <p>Post notices, updates, and announcements that reach every resident instantly. Keep everyone informed without confusion.</p>
+        </div>
+        <div class="overview-card glass-card">
+            <i class="fa-solid fa-people-group"></i>
+            <h4>Active Community</h4>
+            <p>Track resident engagement, manage complaints effectively, and monitor maintenance payments.</p>
+        </div>
+        <div class="overview-card glass-card">
+            <i class="fa-solid fa-gear"></i>
+            <h4>Complete Control</h4>
+            <p>Manage services, update rules, view resident lists, and maintain full oversight of workflows.</p>
+        </div>
+    </div>
+</section>
+
+<!-- FLOW -->
+<section class="flow-section">
+    <h2 class="sc-section-title"><i class="fa-solid fa-bars-progress"></i> How Society Connect Works</h2>
+    <div class="flow-grid">
+        <div class="flow-step">
+            <span>1</span>
+            <p>Admin posts updates & manages services</p>
+        </div>
+        <div class="flow-step">
+            <span>2</span>
+            <p>Residents view notices & register complaints</p>
+        </div>
+        <div class="flow-step">
+            <span>3</span>
+            <p>Real-time tracking & maintenance monitoring</p>
+        </div>
+        <div class="flow-step">
+            <span>4</span>
+            <p>Community stays connected & organized</p>
+        </div>
+    </div>
+</section>
+
+<section class="purpose-box glass-card">
+    <h2 class="sc-section-title" style="justify-content: center; margin-bottom: 1rem;">The Power of Connected Communities</h2>
+    <p>
+        Managing a residential society requires more than just rules and notices. It demands clarity, trust, and seamless communication. Society Connect provides the digital infrastructure that brings residents and administration together, creating a harmonious living experience for everyone.
+    </p>
+</section>
+
+<footer class="admin-footer">
+    © 2025 Society Connect | Empowering Communities
+</footer>
+
+{% endblock %}

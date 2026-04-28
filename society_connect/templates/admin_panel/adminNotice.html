@@ -1,0 +1,102 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Manage Notices | Society Admin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_panel/css/adminNotice.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<section class="page-hero" style="padding-bottom: 10px;">
+    <div class="badge-pill">
+        <i class="fa-solid fa-bell"></i> Manage Notices
+    </div>
+    <h1>Society Notices</h1>
+    <p>Post, edit, and manage announcements for all residents</p>
+    
+    <div style="margin-top: 1.5rem;">
+        <button class="sc-btn sc-btn-primary" onclick="document.getElementById('addNoticeModal').style.display='block'">
+            <i class="fa-solid fa-plus"></i> Post New Notice
+        </button>
+    </div>
+</section>
+
+<!-- NOTICES GRID -->
+<section class="notices-section" style="margin-top: 2rem;">
+    <div class="notices-grid">
+
+        {% for notice in notices %}
+        <div class="notice-card {{ notice.category }}">
+            <div class="notice-header">
+                <span class="notice-category-badge">{{ notice.category }}</span>
+            </div>
+
+            <div class="notice-content">
+                <h3>{{ notice.title }}</h3>
+                <p class="notice-date">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    {{ notice.created_at|date:"d M Y" }}
+                </p>
+                <p class="notice-desc">{{ notice.description }}</p>
+            </div>
+
+            <div class="notice-actions">
+                <a href="{% url 'admin_panel:admin_notices_delete' notice.id %}" class="sc-btn sc-btn-outline" style="border-color: rgba(239,68,68,0.4); color: #f87171;" onclick="return confirm('Are you sure you want to delete this notice?');">
+                    <i class="fa-solid fa-trash"></i> Delete
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-notices">
+            <i class="fa-solid fa-inbox"></i>
+            <h3>No notices yet!</h3>
+            <p style="margin-top: 10px;">Click “Post New Notice” to broadcast.</p>
+        </div>
+        {% endfor %}
+
+    </div>
+</section>
+
+<!-- ADD NOTICE MODAL -->
+<div class="modal" id="addNoticeModal">
+    <div class="modal-content">
+        <span class="close" onclick="this.parentElement.parentElement.style.display='none'">&times;</span>
+
+        <h2><i class="fa-solid fa-plus"></i> Post New Notice</h2>
+
+        <form method="POST" action="{% url 'admin_panel:admin_notices' %}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Title <span class="required">*</span></label>
+                <input type="text" name="title" placeholder="Enter notice title..." required>
+            </div>
+
+            <div class="form-group">
+                <label>Category <span class="required">*</span></label>
+                <select name="category" required>
+                    <option value="urgent">Urgent</option>
+                    <option value="event">Event</option>
+                    <option value="general">General</option>
+                    <option value="maintenance">Maintenance</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Description <span class="required">*</span></label>
+                <textarea name="description" rows="4" placeholder="Type your notice description here..." required></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="sc-btn sc-btn-primary">
+                    <i class="fa-solid fa-paper-plane"></i> Broadcast Notice
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

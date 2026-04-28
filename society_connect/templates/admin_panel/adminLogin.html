@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Society Connect</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- SHARED CSS -->
+    <link rel="stylesheet" href="{% static 'core/css/navigation.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_panel/css/admin_global.css' %}">
+    
+    <!-- SPECIFIC CSS -->
+    <link rel="stylesheet" href="{% static 'admin_panel/css/adminLogin.css' %}">
+</head>
+<body>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        
+        <!-- LEFT IMAGE -->
+        <div class="auth-image">
+            <img src="{% static 'images/img1.jpg' %}" alt="Admin Access">
+        </div>
+
+        <!-- RIGHT LOGIN -->
+        <div class="auth-form-container">
+            <h2>Admin Login</h2>
+            <p class="auth-subtitle">Society Connect Control Panel</p>
+
+            <form method="POST" class="auth-form">
+                {% csrf_token %}
+
+                {% if error %}
+                    <div class="sc-alert sc-alert-error">
+                        <i class="fa-solid fa-triangle-exclamation"></i> {{ error }}
+                    </div>
+                {% endif %}
+
+                <div class="sc-input-group">
+                    <i class="fa-solid fa-user-tie"></i>
+                    <input type="text" name="username" placeholder="Admin Username" required>
+                </div>
+
+                <div class="sc-input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+
+                <button type="submit" class="sc-btn sc-btn-primary" style="width: 100%;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Secure Login
+                </button>
+            </form>
+
+            <div class="auth-links">
+                Not Registered? <a href="{% url 'admin_panel:admin_register' %}">Create Admin Account</a>
+            </div>
+
+            <div class="auth-back">
+                <a href="{% url 'continue_as' %}"><i class="fa-solid fa-arrow-left"></i> Back to Landing page</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Rules & Regulations | Society Connect{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/rules_regulations.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<section class="rules-hero">
+    <h1>Rules & Regulations</h1>
+    <p>Please follow these rules to maintain peace and harmony in the society.</p>
+</section>
+
+<!-- RULES LIST -->
+<section class="rules-container">
+    <div class="rules-list">
+
+        {% if rules %}
+            {% for rule in rules %}
+                <div class="rule-item">
+                    <div class="rule-header">
+                        <h3>{{ rule.title }}</h3>
+                        <span class="rule-category">
+                            {{ rule.get_category_display }}
+                        </span>
+                    </div>
+                    <p class="rule-description">
+                        {{ rule.description }}
+                    </p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-rules">
+                <p>No rules have been published yet.</p>
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

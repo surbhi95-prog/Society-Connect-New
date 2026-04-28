@@ -1,0 +1,33 @@
+/* ============================================
+   ADMIN PANEL GLOBAL STYLES (Overrides Core)
+   ============================================ */
+
+/* ---------- ADMIN DESIGN TOKENS (Cool Colors) ---------- */
+:root {
+    /* Emerald/Teal Base rather than Cyan/Purple */
+    --primary:        #2dd4bf; /* Teal 400 */
+    --primary-dark:   #0f766e; /* Teal 700 */
+    --accent:         #10b981; /* Emerald 500 */
+    --accent-light:   #34d399; /* Emerald 400 */
+    
+    --bg-deepest:     #020617; /* Slate 950 */
+    --bg-deep:        #0f172a; /* Slate 900 */
+    --bg-dark:        #1e293b; /* Slate 800 */
+    --bg-panel:       #334155; /* Slate 700 */
+    --bg-card:        #0f172a; 
+    --bg-card-hover:  #1e293b;
+
+    --grad-primary:   linear-gradient(135deg, #2dd4bf, #0f766e);
+    --grad-accent:    linear-gradient(135deg, #10b981, #059669);
+    --grad-mixed:     linear-gradient(135deg, #2dd4bf 0%, #10b981 100%);
+    
+    --glass-border-accent: rgba(45, 212, 191, 0.25);
+    --shadow-glow:    0 0 20px rgba(45, 212, 191, 0.2);
+}
+
+/* Subtle admin background texture */
+body {
+    background-image: radial-gradient(circle at 15% 50%, rgba(45, 212, 191, 0.03), transparent 25%),
+                      radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.03), transparent 25%);
+    background-attachment: fixed;
+}

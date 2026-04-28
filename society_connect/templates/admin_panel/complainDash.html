@@ -1,0 +1,240 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Analytics Dashboard | Society Admin{% endblock %}
+
+{% block content %}
+<div style="padding: 20px;">
+    <!-- 1. Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{% static 'admin_panel/css/complainDash.css' %}">
+
+    <div class="dashboard-header"
+        style="background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); padding: 30px; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.15); margin-bottom: 30px;">
+        <h1 style="color: #ffffff; margin: 0; font-size: 28px; text-shadow: 1px 1px 2px rgba(0,0,0,0.4);"><i
+                class="fa-solid fa-chart-pie" style="color: #4facfe;"></i> Complaints Analytics Dashboard</h1>
+
+        <div class="filters" style="display: flex; gap: 15px; align-items: center;">
+            <div style="position: relative;">
+                <select id="categoryFilter" onchange="fetchChartData()"
+                    style="appearance: none; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 10px 35px 10px 15px; border-radius: 8px; font-weight: 500; cursor: pointer; backdrop-filter: blur(5px); outline: none; transition: all 0.3s ease;">
+                    <option value="" style="color: #333;">All Categories</option>
+                    <!-- Revised Jinja Logic -->
+                    {% for cat in all_categories %}
+                    {% if cat %}
+                    <option value="{{ cat }}" style="color: #333;">{{ cat }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                <i class="fa-solid fa-chevron-down"
+                    style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.7); pointer-events: none; font-size: 12px;"></i>
+            </div>
+
+            <div style="position: relative;">
+                <select id="statusFilter" onchange="fetchChartData()"
+                    style="appearance: none; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 10px 35px 10px 15px; border-radius: 8px; font-weight: 500; cursor: pointer; backdrop-filter: blur(5px); outline: none; transition: all 0.3s ease;">
+                    <option value="" style="color: #333;">All Statuses</option>
+                    <!-- Revised Jinja Logic -->
+                    {% for state in all_statuses %}
+                    {% if state %}
+                    <option value="{{ state }}" style="color: #333;">{{ state }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                <i class="fa-solid fa-chevron-down"
+                    style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.7); pointer-events: none; font-size: 12px;"></i>
+            </div>
+
+            <a href="{{ url('admin_panel:admin_complaint') }}"
+                style="background: linear-gradient(to right, #ff416c, #ff4b2b); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 65, 108, 0.4); transition: transform 0.2s; display: inline-flex; align-items: center; gap: 8px;"
+                onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <!-- 3. Charts Section Container -->
+    <div class="charts-container">
+        <!-- Bar Chart -->
+        <div class="chart-card" style="border-top: 4px solid #4facfe; transition: transform 0.3s ease; cursor: pointer;"
+            onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <h3 style="color: #444; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-top: 0;">Complaints
+                by Category</h3>
+            <canvas id="categoryChart"></canvas>
+        </div>
+
+        <!-- Pie Chart -->
+        <div class="chart-card" style="border-top: 4px solid #f093fb; transition: transform 0.3s ease; cursor: pointer;"
+            onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <h3 style="color: #444; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-top: 0;">Complaints
+                by Status</h3>
+            <div style="position: relative; height: 300px; width: 100%; display: flex; justify-content: center;">
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Line Chart (Full Width) -->
+        <div class="chart-card full-width"
+            style="border-top: 4px solid #43e97b; transition: transform 0.3s ease; cursor: pointer;"
+            onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <h3 style="color: #444; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-top: 0;">Complaints
+                over Time</h3>
+            <canvas id="dateChart" style="max-height: 400px;"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let categoryChart, statusChart, dateChart;
+
+        // Base color palettes for dynamic assignment
+        const chartColors = [
+            { bg: 'rgba(79, 172, 254, 0.6)', border: 'rgba(79, 172, 254, 1)' },   // Blue Gradient start
+            { bg: 'rgba(0, 242, 254, 0.6)', border: 'rgba(0, 242, 254, 1)' },    // Blue Gradient end
+            { bg: 'rgba(240, 147, 251, 0.6)', border: 'rgba(240, 147, 251, 1)' },  // Pink
+            { bg: 'rgba(245, 87, 108, 0.6)', border: 'rgba(245, 87, 108, 1)' },   // Red Red
+            { bg: 'rgba(67, 233, 123, 0.6)', border: 'rgba(67, 233, 123, 1)' },   // Green
+            { bg: 'rgba(250, 208, 196, 0.6)', border: 'rgba(250, 208, 196, 1)' },  // Peach
+            { bg: 'rgba(161, 140, 209, 0.6)', border: 'rgba(161, 140, 209, 1)' },  // Purple
+            { bg: 'rgba(255, 154, 158, 0.6)', border: 'rgba(255, 154, 158, 1)' },  // Light Red
+            { bg: 'rgba(253, 203, 110, 0.6)', border: 'rgba(253, 203, 110, 1)' },  // Yellow/Orange
+            { bg: 'rgba(0, 184, 148, 0.6)', border: 'rgba(0, 184, 148, 1)' }     // Mint
+        ];
+
+        // Status specific color map
+        const statusColors = {
+            'resolved': { bg: 'rgba(67, 233, 123, 0.7)', border: 'rgba(67, 233, 123, 1)' }, // Green
+            'pending': { bg: 'rgba(253, 203, 110, 0.7)', border: 'rgba(253, 203, 110, 1)' }, // Yellow
+            'progress': { bg: 'rgba(79, 172, 254, 0.7)', border: 'rgba(79, 172, 254, 1)' }, // Blue
+            'rejected': { bg: 'rgba(245, 87, 108, 0.7)', border: 'rgba(245, 87, 108, 1)' }  // Red
+        };
+
+        function renderCharts(data) {
+
+            // Dynamically generate background and border colors for categories based on palette
+            const catBgColors = data.category_labels.map((_, i) => chartColors[i % chartColors.length].bg);
+            const catBorderColors = data.category_labels.map((_, i) => chartColors[i % chartColors.length].border);
+
+            // Render Bar Chart
+            const ctxCategory = document.getElementById('categoryChart').getContext('2d');
+            if (categoryChart) categoryChart.destroy();
+            categoryChart = new Chart(ctxCategory, {
+                type: 'bar',
+                data: {
+                    labels: data.category_labels,
+                    datasets: [{
+                        label: 'Number of Complaints',
+                        data: data.category_data,
+                        backgroundColor: catBgColors,
+                        borderColor: catBorderColors,
+                        borderWidth: 1.5,
+                        borderRadius: 6, // Rounded bars
+                        barThickness: 'flex',
+                        maxBarThickness: 50
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false } // Hide legend for bar chart since it's obvious
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                        x: { grid: { display: false } } // Cleaner look without x grid
+                    }
+                }
+            });
+
+            // Dynamically assign specific colors to statuses if they match our known map, else fallback to palette
+            const statBgColors = data.status_labels.map((label, i) => {
+                const key = label.toLowerCase();
+                return statusColors[key] ? statusColors[key].bg : chartColors[(i + 5) % chartColors.length].bg;
+            });
+            const statBorderColors = data.status_labels.map((label, i) => {
+                const key = label.toLowerCase();
+                return statusColors[key] ? statusColors[key].border : chartColors[(i + 5) % chartColors.length].border;
+            });
+
+            // Render Pie Chart
+            const ctxStatus = document.getElementById('statusChart').getContext('2d');
+            if (statusChart) statusChart.destroy();
+            statusChart = new Chart(ctxStatus, {
+                type: 'doughnut', // Doughnut looks slightly more modern than standard pie
+                data: {
+                    labels: data.status_labels,
+                    datasets: [{
+                        label: 'Status Distribution',
+                        data: data.status_data,
+                        backgroundColor: statBgColors,
+                        borderColor: '#ffffff',
+                        borderWidth: 2,
+                        hoverOffset: 10 // Pops out slightly on hover
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%', // Makes it a nice ring
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true } }
+                    }
+                }
+            });
+
+            // Create gradient for Line Chart
+            const ctxDate = document.getElementById('dateChart').getContext('2d');
+            const lineGradient = ctxDate.createLinearGradient(0, 0, 0, 400);
+            lineGradient.addColorStop(0, 'rgba(67, 233, 123, 0.5)'); // Top green
+            lineGradient.addColorStop(1, 'rgba(67, 233, 123, 0.05)'); // Fades to bottom
+
+            if (dateChart) dateChart.destroy();
+            dateChart = new Chart(ctxDate, {
+                type: 'line',
+                data: {
+                    labels: data.date_labels,
+                    datasets: [{
+                        label: 'Complaints over Time',
+                        data: data.date_data,
+                        backgroundColor: lineGradient,
+                        borderColor: 'rgba(67, 233, 123, 1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: 'rgba(67, 233, 123, 1)',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: true,
+                        tension: 0.4 // Smooth curves
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } }, // Usually obvious for simple line charts
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function fetchChartData() {
+            const category = document.getElementById('categoryFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            const url = new URL(window.location.href);
+            if (category) url.searchParams.set('category', category);
+            else url.searchParams.delete('category');
+
+            if (status) url.searchParams.set('status', status);
+            else url.searchParams.delete('status');
+
+            fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(response => response.json())
+                .then(data => { renderCharts(data); })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchChartData);
+    </script>
+</div>
+{% endblock %}

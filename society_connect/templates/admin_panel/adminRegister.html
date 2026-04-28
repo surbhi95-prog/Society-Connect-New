@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Registration | Society Connect</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- SHARED CSS -->
+    <link rel="stylesheet" href="{% static 'core/css/navigation.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_panel/css/admin_global.css' %}">
+    
+    <!-- SHARED AUTH CSS -->
+    <link rel="stylesheet" href="{% static 'admin_panel/css/adminLogin.css' %}">
+</head>
+<body>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        
+        <!-- LEFT IMAGE -->
+        <div class="auth-image">
+            <img src="{% static 'images/img3.jpg' %}" alt="Admin Register">
+        </div>
+
+        <!-- RIGHT REGISTER -->
+        <div class="auth-form-container">
+            <h2>Admin Registration</h2>
+            <p class="auth-subtitle">Create Society Connect Control Panel Account</p>
+
+            <form method="POST" class="auth-form">
+                {% csrf_token %}
+
+                {% if user_form.non_field_errors or profile_form.non_field_errors %}
+                    <div class="sc-alert sc-alert-error">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <div>
+                            {{ user_form.non_field_errors }}
+                            {{ profile_form.non_field_errors }}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="sc-input-group">
+                    <i class="fa-solid fa-envelope"></i>
+                    {{ user_form.email }}
+                </div>
+                {% if user_form.email.errors %}
+                <small style="color: #fca5a5; margin-top:-10px;">{{ user_form.email.errors.0 }}</small>
+                {% endif %}
+
+                <div class="sc-input-group">
+                    <i class="fa-solid fa-building"></i>
+                    {{ profile_form.society }}
+                </div>
+                {% if profile_form.society.errors %}
+                <small style="color: #fca5a5; margin-top:-10px;">{{ profile_form.society.errors.0 }}</small>
+                {% endif %}
+
+                <div class="sc-input-group">
+                    <i class="fa-solid fa-user"></i>
+                    {{ user_form.username }}
+                </div>
+                {% if user_form.username.errors %}
+                <small style="color: #fca5a5; margin-top:-10px;">{{ user_form.username.errors.0 }}</small>
+                {% endif %}
+
+                <div class="sc-input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    {{ user_form.password1 }}
+                </div>
+                {% if user_form.password1.errors %}
+                <small style="color: #fca5a5; margin-top:-10px;">{{ user_form.password1.errors.0 }}</small>
+                {% endif %}
+
+                <div class="sc-input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    {{ user_form.password2 }}
+                </div>
+                {% if user_form.password2.errors %}
+                <small style="color: #fca5a5; margin-top:-10px;">{{ user_form.password2.errors.0 }}</small>
+                {% endif %}
+
+                <button type="submit" class="sc-btn sc-btn-primary" style="width: 100%; margin-top: 10px;">
+                    <i class="fa-solid fa-user-plus"></i> Register
+                </button>
+            </form>
+
+            <div class="auth-links">
+                Already Registered? <a href="{% url 'admin_panel:admin_login' %}">Go to Login</a>
+            </div>
+
+            <div class="auth-back">
+                <a href="{% url 'continue_as' %}"><i class="fa-solid fa-arrow-left"></i> Back to Landing page</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

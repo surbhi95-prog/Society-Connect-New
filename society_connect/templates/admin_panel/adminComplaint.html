@@ -1,0 +1,415 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Manage Complaints | Society Admin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_panel/css/adminComplaint.css' %}">
+<link rel="stylesheet" href="{% static 'admin_panel/css/complainDash.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<section class="page-hero">
+    <div class="badge-pill">
+        <i class="fa-solid fa-clipboard-list"></i> Manage Complaints
+    </div>
+    <h1>Complaint Resolution</h1>
+    <p>Review, respond to, and resolve resident complaints efficiently</p>
+    <div style="margin-top: 1.5rem;">
+        <button id="showDashboard" class="sc-btn sc-btn-primary">
+            <i class="fa-solid fa-chart-pie"></i> View Analytics Dashboard
+        </button>
+    </div>
+</section>
+
+<!-- COMPLAINTS TABLE -->
+<section class="complaints-section">
+    <div class="filter-bar">
+        <form id="complaintsFilterForm" method="GET">
+            <div style="display:flex; flex-direction:column;">
+                <label for="category" style="color:var(--text-bright); margin-bottom:5px;">Category</label>
+                <select id="category" name="category">
+                    <option value="" {% if not selected_category %}selected{% endif %}>All Categories</option>
+                    {% for cat in all_categories %}
+                    {% if cat %}
+                    <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="display:flex; flex-direction:column;">
+                <label for="status" style="color:var(--text-bright); margin-bottom:5px;">Status</label>
+                <select id="status" name="status">
+                    <option value="" {% if not selected_status %}selected{% endif %}>All Statuses</option>
+                    {% for state in all_statuses %}
+                    {% if state %}
+                    <option value="{{ state }}" {% if selected_status == state %}selected{% endif %}>{{ state|capfirst }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="sc-btn sc-btn-primary" style="padding: 10px 16px;">Apply Filters</button>
+            <button id="clearFilters" type="button" class="sc-btn sc-btn-outline" style="padding: 10px 16px;">Clear</button>
+        </form>
+    </div>
+
+    <div class="table-container" style="margin-top: 1.5rem;">
+        <table class="complaints-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Resident</th>
+                    <th>Flat No.</th>
+                    <th>Category</th>
+                    <th>Subject</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            {% for complaint in complaints %}
+            <tr>
+                <td style="color:var(--primary); font-family:monospace;">#C{{ complaint.id }}</td>
+                <td><strong>{{ complaint.user.userprofile.full_name }}</strong></td>
+                <td><span style="background:rgba(255,255,255,0.1); padding: 2px 8px; border-radius:4px;">{{ complaint.user.userprofile.flat_no }}</span></td>
+                <td>{{ complaint.category }}</td>
+                <td style="color:var(--text-muted);">{{ complaint.description|truncatechars:30 }}</td>
+
+                <td>
+                    <form method="POST" action="{% url 'admin_panel:update_complaint_status' complaint.id %}">
+                        {% csrf_token %}
+                        <select name="status" onchange="this.form.submit()">
+                            <option value="pending" {% if complaint.status == 'pending' %}selected{% endif %}>Pending</option>
+                            <option value="progress" {% if complaint.status == 'progress' %}selected{% endif %}>In Progress</option>
+                            <option value="resolved" {% if complaint.status == 'resolved' %}selected{% endif %}>Resolved</option>
+                        </select>
+                    </form>
+                </td>
+
+                <td style="color:var(--text-faint);">{{ complaint.created_at|date:"d M Y" }}</td>
+
+                <td>
+                    <button class="sc-btn sc-btn-outline" style="padding: 6px 12px;"
+                        onclick="openComplaintModal(
+                            '{{ complaint.id }}',
+                            '{{ complaint.user.userprofile.full_name|escapejs }}',
+                            '{{ complaint.category|escapejs }}',
+                            '{{ complaint.location|escapejs }}',
+                            '{{ complaint.description|escapejs }}',
+                            '{{ complaint.status|capfirst }}',
+                            '{{ complaint.created_at|date:"d M Y" }}'
+                        )">
+                        <i class="fa-solid fa-eye"></i> View
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="no-data">No complaints found. Your society is peaceful!</td>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ANALYTICS DASHBOARD -->
+<div id="dashboard" style="display: none;">
+    <!-- 1. Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <div class="dashboard-header">
+        <h1 style="color: #ffffff; margin: 0; font-size: 24px;"><i class="fa-solid fa-chart-pie" style="color: var(--primary);"></i> Analytics Dashboard</h1>
+
+        <div class="filters" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+            <div style="position: relative;">
+                <select id="categoryFilter" onchange="fetchChartData()" style="appearance: none; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 10px 35px 10px 15px; border-radius: 8px; cursor: pointer; outline: none;">
+                    <option value="" {% if not selected_category %}selected{% endif %}>All Categories</option>
+                    {% for cat in all_categories %}
+                    {% if cat %}
+                    <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                <i class="fa-solid fa-chevron-down" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.7); pointer-events: none; font-size: 12px;"></i>
+            </div>
+
+            <div style="position: relative;">
+                <select id="statusFilter" onchange="fetchChartData()" style="appearance: none; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 10px 35px 10px 15px; border-radius: 8px; cursor: pointer; outline: none;">
+                    <option value="" {% if not selected_status %}selected{% endif %}>All Statuses</option>
+                    {% for state in all_statuses %}
+                    {% if state %}
+                    <option value="{{ state }}" {% if selected_status == state %}selected{% endif %}>{{ state|capfirst }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                <i class="fa-solid fa-chevron-down" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.7); pointer-events: none; font-size: 12px;"></i>
+            </div>
+
+            <button id="hideDashboard" class="sc-btn sc-btn-outline" style="border-color: rgba(239, 68, 68, 0.4); color: #f87171;">
+                <i class="fa-solid fa-arrow-left"></i> Back to Complaints
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. Charts Section Container -->
+    <div class="charts-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin-top: 1.5rem;">
+        <!-- Bar Chart -->
+        <div class="chart-card" style="padding: 20px; border-radius: 8px;">
+            <h3 style="padding-bottom: 10px; margin-top: 0; font-size: 1.1rem;"><i class="fa-solid fa-chart-column" style="color:var(--primary);"></i> Complaints by Category</h3>
+            <canvas id="categoryChart"></canvas>
+        </div>
+
+        <!-- Pie Chart -->
+        <div class="chart-card" style="padding: 20px; border-radius: 8px;">
+            <h3 style="padding-bottom: 10px; margin-top: 0; font-size: 1.1rem;"><i class="fa-solid fa-chart-area" style="color:var(--accent-light);"></i> Complaints by Status</h3>
+            <div style="position: relative; height: 300px; width: 100%; display: flex; justify-content: center;">
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Line Chart (Full Width) -->
+        <div class="chart-card full-width" style="grid-column: 1 / -1; padding: 20px; border-radius: 8px;">
+            <h3 style="padding-bottom: 10px; margin-top: 0; font-size: 1.1rem;"><i class="fa-solid fa-chart-line" style="color:#6ee7b7;"></i> Complaints over Time</h3>
+            <canvas id="dateChart" style="max-height: 400px;"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- VIEW MODAL -->
+<div id="viewModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()"> &times;</span>
+        <h2><i class="fa-solid fa-circle-info"></i> Complaint Details</h2>
+
+        <p><b>ID:</b> <span id="m-id" style="color:var(--primary);"></span></p>
+        <p><b>Resident:</b> <span id="m-user"></span></p>
+        <p><b>Category:</b> <span id="m-category"></span></p>
+        <p><b>Location:</b> <span id="m-location"></span></p>
+        <p><b>Status:</b> <span id="m-status"></span></p>
+        <p><b>Date:</b> <span id="m-date" style="color:var(--text-faint);"></span></p>
+
+        <p><b>Description:</b></p>
+        <div id="m-description" style="color:var(--text-muted); background:rgba(0,0,0,0.2); padding:1rem; border-radius:8px;"></div>
+        
+        <div style="text-align: right; margin-top: 1.5rem;">
+            <button class="sc-btn sc-btn-outline" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openComplaintModal(id, user, category, location, description, status, date) {
+    document.getElementById("m-id").innerText = "#C" + id;
+    document.getElementById("m-user").innerText = user;
+    document.getElementById("m-category").innerText = category;
+    document.getElementById("m-location").innerText = location;
+    document.getElementById("m-status").innerText = status;
+    document.getElementById("m-date").innerText = date;
+    document.getElementById("m-description").innerText = description;
+
+    document.getElementById("viewModal").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("viewModal").style.display = "none";
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById("viewModal");
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+}
+
+// Dashboard toggle
+document.getElementById('showDashboard').addEventListener('click', function() {
+    document.querySelector('.complaints-section').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    fetchChartData(); // Load charts
+});
+
+document.getElementById('hideDashboard').addEventListener('click', function() {
+    document.getElementById('dashboard').style.display = 'none';
+    document.querySelector('.complaints-section').style.display = 'block';
+});
+
+// Filters (Complaints list)
+document.getElementById('clearFilters').addEventListener('click', function() {
+    document.getElementById('category').value = '';
+    document.getElementById('status').value = '';
+    document.getElementById('complaintsFilterForm').submit();
+});
+
+// Chart functions
+let categoryChart, statusChart, dateChart;
+
+// Base color palettes for dynamic assignment
+const chartColors = [
+    { bg: 'rgba(45, 212, 191, 0.6)', border: '#2dd4bf' },   // Teal
+    { bg: 'rgba(16, 185, 129, 0.6)', border: '#10b981' },   // Emerald
+    { bg: 'rgba(56, 189, 248, 0.6)', border: '#38bdf8' },   // Light Blue
+    { bg: 'rgba(167, 139, 250, 0.6)', border: '#a78bfa' },  // Purple
+    { bg: 'rgba(244, 114, 182, 0.6)', border: '#f472b6' }   // Pink
+];
+
+// Status specific color map
+const statusColors = {
+    'resolved': { bg: 'rgba(16, 185, 129, 0.7)', border: '#10b981' }, // Green
+    'pending': { bg: 'rgba(245, 158, 11, 0.7)', border: '#f59e0b' }, // Yellow
+    'progress': { bg: 'rgba(56, 189, 248, 0.7)', border: '#38bdf8' }, // Blue
+    'rejected': { bg: 'rgba(239, 68, 68, 0.7)', border: '#ef4444' }  // Red
+};
+
+function renderCharts(data) {
+
+    // Dynamically generate background and border colors for categories based on palette
+    const catBgColors = data.category_labels.map((_, i) => chartColors[i % chartColors.length].bg);
+    const catBorderColors = data.category_labels.map((_, i) => chartColors[i % chartColors.length].border);
+
+    // Render Bar Chart
+    const ctxCategory = document.getElementById('categoryChart').getContext('2d');
+    if (categoryChart) categoryChart.destroy();
+    categoryChart = new Chart(ctxCategory, {
+        type: 'bar',
+        data: {
+            labels: data.category_labels,
+            datasets: [{
+                label: 'Number of Complaints',
+                data: data.category_data,
+                backgroundColor: catBgColors,
+                borderColor: catBorderColors,
+                borderWidth: 1.5,
+                borderRadius: 6, // Rounded bars
+                barThickness: 'flex',
+                maxBarThickness: 50
+            }]
+        },
+        options: { 
+            responsive: true, 
+            plugins: {
+                legend: { display: false } // Hide legend for bar chart since it's obvious
+            },
+            scales: { 
+                y: { 
+                    beginAtZero: true, 
+                    ticks: { stepSize: 1, color: '#94a3b8' },
+                    grid: { color: 'rgba(255,255,255,0.05)' }
+                },
+                x: { 
+                    grid: { display: false },
+                    ticks: { color: '#e2e8f0' }
+                } 
+            } 
+        }
+    });
+
+    // Dynamically assign specific colors to statuses if they match our known map, else fallback to palette
+    const statBgColors = data.status_labels.map((label, i) => {
+        const key = label.toLowerCase();
+        return statusColors[key] ? statusColors[key].bg : chartColors[(i + 5) % chartColors.length].bg;
+    });
+    const statBorderColors = data.status_labels.map((label, i) => {
+        const key = label.toLowerCase();
+        return statusColors[key] ? statusColors[key].border : chartColors[(i + 5) % chartColors.length].border;
+    });
+
+    // Render Pie Chart
+    const ctxStatus = document.getElementById('statusChart').getContext('2d');
+    if (statusChart) statusChart.destroy();
+    statusChart = new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+            labels: data.status_labels,
+            datasets: [{
+                label: 'Status Distribution',
+                data: data.status_data,
+                backgroundColor: statBgColors,
+                borderColor: '#0f172a',
+                borderWidth: 2,
+                hoverOffset: 10
+            }]
+        },
+        options: { 
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '60%', 
+            plugins: {
+                legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true, color: '#e2e8f0' } }
+            }
+        }
+    });
+
+    // Create gradient for Line Chart
+    const ctxDate = document.getElementById('dateChart').getContext('2d');
+    const lineGradient = ctxDate.createLinearGradient(0, 0, 0, 400);
+    lineGradient.addColorStop(0, 'rgba(45, 212, 191, 0.5)'); 
+    lineGradient.addColorStop(1, 'rgba(45, 212, 191, 0.05)'); 
+
+    if (dateChart) dateChart.destroy();
+    dateChart = new Chart(ctxDate, {
+        type: 'line',
+        data: {
+            labels: data.date_labels,
+            datasets: [{
+                label: 'Complaints over Time',
+                data: data.date_data,
+                backgroundColor: lineGradient,
+                borderColor: '#2dd4bf',
+                borderWidth: 3,
+                pointBackgroundColor: '#ffffff',
+                pointBorderColor: '#2dd4bf',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                fill: true,
+                tension: 0.4 
+            }]
+        },
+        options: { 
+            responsive: true, 
+            plugins: { legend: { display: false } }, 
+            scales: { 
+                y: { 
+                    beginAtZero: true, 
+                    ticks: { stepSize: 1, color: '#94a3b8' },
+                    grid: { color: 'rgba(255,255,255,0.05)' }
+                },
+                x: { 
+                    grid: { display: false },
+                    ticks: { color: '#e2e8f0' }
+                }
+            } 
+        }
+    });
+}
+
+function fetchChartData() {
+    const category = document.getElementById('categoryFilter').value;
+    const status = document.getElementById('statusFilter').value;
+
+    const url = new URL(window.location.href);
+    if (category) url.searchParams.set('category', category);
+    else url.searchParams.delete('category');
+
+    if (status) url.searchParams.set('status', status);
+    else url.searchParams.delete('status');
+
+    // Keep the URL in sync so the dashboard filters can be revisited and shared
+    history.replaceState(null, '', url);
+
+    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(response => response.json())
+        .then(data => { renderCharts(data); })
+        .catch(error => console.error('Error fetching data:', error));
+}
+</script>
+
+{% endblock %}

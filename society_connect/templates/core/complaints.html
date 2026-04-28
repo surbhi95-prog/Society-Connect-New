@@ -1,0 +1,240 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Management - Society Connect</title>
+
+    <link rel="stylesheet" href="{% static 'css/complaints.css' %}">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+        });
+    </script>
+</head>
+  
+<body>
+
+    <header class="navbar">
+        <div class="logo">Society Connect</div>
+
+        <!-- <button title="sidebar" class="hamburger" id="hamBtn">
+            <i data-lucide="menu"></i>
+        </button> -->
+
+        <nav class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="notice.html">Notice Board</a>
+            <a class="active" href="complaints.html">Complaint Box</a>
+            <a href="maintenance.html">Maintenance</a>
+            <a href="#">Events</a>
+            <a href="services.html">Services</a>
+            <a href="rules_regulations.html">Rules</a>
+        </nav>
+
+        <div class="profile">
+            <img src="{% static 'images/bg.jpeg' %}" alt="Profile">
+            <a href="#">Logout</a>
+        </div>
+    </header>
+
+<!-- TRACKING SECTION -->
+
+<section class="tracking-section">
+    <div class="tracking-header">
+        <h1>Your Complaint Status</h1>
+        <p class="subtitle">Track and manage all your submitted complaints in one place</p>
+    </div>
+    
+<!-- Summary Stats -->
+<!-- 
+<div class="stats-container">
+    <div class="stat-card">
+        <i data-lucide="alert-circle"></i>
+        <div class="stat-info">
+            <h3>1</h3>
+            <p>Pending</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <i data-lucide="loader"></i>
+        <div class="stat-info">
+            <h3>1</h3>
+            <p>In Progress</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <i data-lucide="check-circle-2"></i>
+        <div class="stat-info">
+            <h3>1</h3>
+            <p>Resolved</p>
+        </div>
+    </div> -->
+</div>
+
+<!-- Filter Tabs -->
+
+<div class="filter-tabs">
+    <button class="tab-btn active" data-filter="all">All Complaints</button>
+    <button class="tab-btn" data-filter="pending">Pending</button>
+    <button class="tab-btn" data-filter="progress">In Progress</button>
+    <button class="tab-btn" data-filter="resolved">Resolved</button>
+</div>
+
+<!-- Tracking Cards -->
+<div class="tracking-container">
+    <div class="tracking-card" data-status="pending">
+        <div class="card-header">
+            <div class="complaint-id">
+                <i data-lucide="file-text"></i>
+                <h3>Complaint #SC1021</h3>
+            </div>
+            <div class="status-badge status-pending">
+                <i data-lucide="clock"></i>
+                Pending
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="info-row">
+                <i data-lucide="tag"></i>
+                <div>
+                    <span class="label">Category</span>
+                    <span class="value">Electricity Issue</span>
+                </div>
+            </div>
+            <div class="info-row">
+                <i data-lucide="map-pin"></i>
+                <div>
+                    <span class="label">Location</span>
+                    <span class="value">Building B · 3rd Floor</span>
+                </div>
+            </div>
+            <div class="info-row">
+                <i data-lucide="calendar"></i>
+                <div>
+                    <span class="label">Submitted</span>
+                    <span class="value">Nov 18, 2025</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <button class="view-btn">View Details</button>
+        </div>
+    </div>
+
+    <div class="tracking-card" data-status="progress">
+        <div class="card-header">
+            <div class="complaint-id">
+                <i data-lucide="file-text"></i>
+                <h3>Complaint #SC1022</h3>
+            </div>
+            <div class="status-badge status-progress">
+                <i data-lucide="loader"></i>
+                In Progress
+            </div>
+        </div>
+
+    <div class="card-body">
+        <div class="info-row">
+            <i data-lucide="tag"></i>
+            <div>
+                <span class="label">Category</span>
+                <span class="value">Water Supply Issue</span>
+            </div>
+        </div>
+        
+        <div class="info-row">
+            <i data-lucide="map-pin"></i>
+            <div>
+                <span class="label">Location</span>
+                <span class="value">Tower A · Ground Floor</span>
+            </div>
+        </div>
+        <div class="info-row">
+            <i data-lucide="calendar"></i>
+            <div>
+                <span class="label">Submitted</span>
+                <span class="value">Nov 17, 2025</span>
+            </div>
+        </div>
+        <div class="info-row">
+            <i data-lucide="user"></i>
+            <div>
+                <span class="label">Assigned To</span>
+                <span class="value">Plumber Team</span>
+            </div>
+        </div>
+    </div>
+
+        <div class="card-footer">
+            <button class="view-btn">View Details</button>
+        </div>
+    </div>
+
+    <div class="tracking-card" data-status="resolved">
+        <div class="card-header">
+            <div class="complaint-id">
+                <i data-lucide="file-text"></i>
+                <h3>Complaint #SC1023</h3>
+            </div>
+            <div class="status-badge status-resolved">
+                <i data-lucide="check-circle"></i>
+                Resolved
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="info-row">
+                <i data-lucide="tag"></i>
+                <div>
+                    <span class="label">Category</span>
+                    <span class="value">Plumber</span>
+                </div>
+            </div>
+            <div class="info-row">
+                <i data-lucide="map-pin"></i>
+                <div>
+                    <span class="label">Location</span>
+                    <span class="value">Building C · 1st Floor</span>
+                </div>
+            </div>
+            <div class="info-row">
+                <i data-lucide="calendar"></i>
+                <div>
+                    <span class="label">Submitted</span>
+                    <span class="value">Nov 15, 2025</span>
+                </div>
+            </div>
+            <div class="info-row">
+                <i data-lucide="check"></i>
+                <div>
+                    <span class="label">Resolved On</span>
+                    <span class="value">Nov 16, 2025</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <button class="view-btn">View Details</button>
+        </div>
+    </div>
+</div>
+</section>
+
+    <!-- SIDEBAR SCRIPT -->
+    <script>
+        const hamBtn = document.getElementById("hamBtn");
+        const sidebar = document.getElementById("sidebar");
+
+        hamBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("sidebar-active");
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,261 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block title %}Manage Services | Society Admin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_panel/css/adminServices.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<section class="page-hero" style="padding-bottom: 10px;">
+    <div class="badge-pill">
+        <i class="fa-solid fa-wrench"></i> Manage Services
+    </div>
+    <h1>Service Providers</h1>
+    <p>Add, edit, and manage essential external services for all residents.</p>
+    <div style="margin-top: 1.5rem;">
+        <button class="sc-btn sc-btn-primary" onclick="openServiceModal()">
+            <i class="fa-solid fa-plus"></i> Add New Service
+        </button>
+    </div>
+</section>
+
+<!-- SERVICES GRID -->
+<section class="services-section">
+    {% if services %}
+    <div class="services-grid" id="servicesGrid">
+        {% for service in services %}
+        <div class="service-card">
+            <div class="service-icon">
+                <i class="fa-solid {{ service.get_icon_class }}"></i>
+            </div>
+            <h3>{{ service.get_service_name }}</h3>
+            <div class="service-details">
+                <p><i class="fa-solid fa-user"></i> <span>{{ service.provider_name }}</span></p>
+                <p><i class="fa-solid fa-phone"></i> <span>{{ service.contact_number }}</span></p>
+                {% if service.email_address %}
+                <p><i class="fa-solid fa-envelope"></i> <span>{{ service.email_address }}</span></p>
+                {% endif %}
+                {% if service.available_days %}
+                <p><i class="fa-solid fa-calendar"></i> <span style="color:var(--text-faint);">{{ service.available_days }}</span></p>
+                {% endif %}
+            </div>
+            <div class="service-actions">
+                <button class="sc-btn sc-btn-outline" style="padding: 6px 12px;" onclick="editService({{ service.id }})">
+                    <i class="fa-solid fa-pen"></i> Edit
+                </button>
+                <button class="sc-btn sc-btn-outline" style="padding: 6px 12px; border-color: rgba(239,68,68,0.4); color: #f87171;" onclick="deleteService({{ service.id }})">
+                    <i class="fa-solid fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-services">
+        <i class="fa-solid fa-box-open"></i>
+        <h3>No services available</h3>
+        <p style="margin-top: 10px;">Click "Add New Service" to build the directory.</p>
+    </div>
+    {% endif %}
+</section>
+
+<!-- ADD / EDIT SERVICE MODAL -->
+<div id="serviceModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeServiceModal()">&times;</span>
+        <h2 id="modalTitle"><i class="fa-solid fa-plus-circle"></i> Add New Service</h2>
+
+        <form class="service-form" id="serviceForm" method="POST" action="{% url 'admin_panel:admin_services' %}">
+            {% csrf_token %}
+            <input type="hidden" name="service_id" id="serviceId">
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Service Type <span class="required">*</span></label>
+                    <select name="service_type" id="serviceType" required>
+                        <option value="">Select Service Type</option>
+                        <option value="plumber">Plumber</option>
+                        <option value="electrician">Electrician</option>
+                        <option value="carpenter">Carpenter</option>
+                        <option value="painter">Painter</option>
+                        <option value="cleaner">Cleaner</option>
+                        <option value="gardener">Gardener</option>
+                        <option value="security">Security</option>
+                        <option value="pest-control">Pest Control</option>
+                        <option value="ac-repair">AC Repair</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="customServiceGroup" style="display: none;">
+                    <label>Custom Service Name <span class="required">*</span></label>
+                    <input type="text" name="custom_service_name" id="customServiceName" placeholder="Enter service name">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Provider Name <span class="required">*</span></label>
+                    <input type="text" name="provider_name" id="providerName" placeholder="Enter provider name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Contact Number <span class="required">*</span></label>
+                    <input type="tel" name="contact_number" id="contactNumber" placeholder="Enter contact number" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" name="email_address" id="emailAddress" placeholder="Enter email address">
+                </div>
+
+                <div class="form-group">
+                    <label>Alternate Number</label>
+                    <input type="tel" name="alternate_number" id="alternateNumber" placeholder="Enter alternate number">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Service Description</label>
+                <textarea name="service_description" id="serviceDescription" rows="3" placeholder="Brief description of the service..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Address</label>
+                <textarea name="address" id="serviceAddress" rows="2" placeholder="Service provider's address (optional)"></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Available Days</label>
+                    <input type="text" name="available_days" id="availableDays" placeholder="e.g., Monday - Saturday">
+                </div>
+
+                <div class="form-group">
+                    <label>Available Hours</label>
+                    <input type="text" name="available_hours" id="availableHours" placeholder="e.g., 9:00 AM - 6:00 PM">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="sc-btn sc-btn-outline" onclick="closeServiceModal()">Cancel</button>
+                <button type="submit" class="sc-btn sc-btn-primary">
+                    <i class="fa-solid fa-check"></i> Save Service
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- DELETE CONFIRMATION MODAL -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content delete-modal-content" style="max-width: 400px; text-align: center;">
+        <h2 style="border:none;"><i class="fa-solid fa-triangle-exclamation" style="font-size:3rem; color:#f87171; display:block; margin-bottom:1rem;"></i> Confirm Delete</h2>
+        <p style="color:var(--text-bright); border:none;">Are you sure you want to delete this service? This action cannot be undone.</p>
+        <form id="deleteForm" method="POST">
+            {% csrf_token %}
+            <div class="form-actions" style="justify-content:center; margin-top:2rem;">
+                <button type="button" class="sc-btn sc-btn-outline" onclick="closeDeleteModal()">Cancel</button>
+                <button type="submit" class="sc-btn sc-btn-primary" style="background: rgba(239, 68, 68, 0.8); box-shadow: none;">
+                    <i class="fa-solid fa-trash"></i> Delete System
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+let currentDeleteId = null;
+
+// Open service modal for adding
+function openServiceModal() {
+    const modal = document.getElementById('serviceModal');
+    modal.style.display = 'block';
+    document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-plus-circle"></i> Add New Service`;
+    document.getElementById('serviceForm').reset();
+    document.getElementById('serviceId').value = '';
+    document.getElementById('customServiceGroup').style.display = 'none';
+}
+
+// Close service modal
+function closeServiceModal() {
+    const modal = document.getElementById('serviceModal');
+    modal.style.display = 'none';
+}
+
+// Edit service
+function editService(serviceId) {
+    fetch(`/admin_panel/services/get/${serviceId}/`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-edit"></i> Edit Service`;
+            document.getElementById('serviceId').value = data.id;
+            document.getElementById('serviceType').value = data.service_type;
+            document.getElementById('customServiceName').value = data.custom_service_name;
+            document.getElementById('providerName').value = data.provider_name;
+            document.getElementById('contactNumber').value = data.contact_number;
+            document.getElementById('emailAddress').value = data.email_address;
+            document.getElementById('alternateNumber').value = data.alternate_number;
+            document.getElementById('serviceDescription').value = data.service_description;
+            document.getElementById('serviceAddress').value = data.address;
+            document.getElementById('availableDays').value = data.available_days;
+            document.getElementById('availableHours').value = data.available_hours;
+            
+            if (data.service_type === 'other') {
+                document.getElementById('customServiceGroup').style.display = 'block';
+                document.getElementById('customServiceName').required = true;
+            }
+            
+            document.getElementById('serviceModal').style.display = 'block';
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+// Delete service
+function deleteService(serviceId) {
+    currentDeleteId = serviceId;
+    document.getElementById('deleteForm').action = `/admin_panel/services/delete/${serviceId}/`;
+    document.getElementById('deleteModal').style.display = 'block';
+}
+
+// Close delete modal
+function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+    currentDeleteId = null;
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const serviceModal = document.getElementById('serviceModal');
+    const deleteModal = document.getElementById('deleteModal');
+    
+    if (event.target == serviceModal) {
+        serviceModal.style.display = "none";
+    }
+    if (event.target == deleteModal) {
+        deleteModal.style.display = "none";
+    }
+}
+
+// Show/hide custom service input
+document.getElementById('serviceType').addEventListener('change', function() {
+    const customGroup = document.getElementById('customServiceGroup');
+    if (this.value === 'other') {
+        customGroup.style.display = 'block';
+        document.getElementById('customServiceName').required = true;
+    } else {
+        customGroup.style.display = 'none';
+        document.getElementById('customServiceName').required = false;
+    }
+});
+</script>
+{% endblock %}
+
+{% endblock %}
